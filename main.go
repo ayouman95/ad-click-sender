@@ -482,7 +482,7 @@ func updateSymlink(target string) {
 	if err := os.Symlink(target, currentLink); err != nil {
 		log.Printf("创建软链接失败: %v", err)
 	} else {
-		log.Printf("软链接更新: %s -> %s", currentLink, target)
+		//log.Printf("软链接更新: %s -> %s", currentLink, target)
 	}
 }
 
