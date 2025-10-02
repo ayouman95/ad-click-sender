@@ -101,16 +101,16 @@ var (
 			MaxConnsPerHost:       100,              // 每个 host 最大连接数
 			MaxIdleConns:          100,              // 最大空闲连接
 			MaxIdleConnsPerHost:   32,               // 每个 host 最大空闲连接
-			IdleConnTimeout:       90 * time.Second, // 空闲连接超时
+			IdleConnTimeout:       60 * time.Second, // 空闲连接超时
 			DisableKeepAlives:     false,            // 启用 Keep-Alive
 			DisableCompression:    true,             // 禁用压缩（可选）
-			TLSHandshakeTimeout:   10 * time.Second, // TLS 超时
-			ResponseHeaderTimeout: 10 * time.Second, // 响应头超时
+			TLSHandshakeTimeout:   1 * time.Second,  // TLS 超时
+			ResponseHeaderTimeout: 1 * time.Second,  // 响应头超时
 		},
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
-		Timeout: 30 * time.Second, // 整个请求超时
+		Timeout: 100 * time.Microsecond, // 整个请求超时
 	}
 )
 
@@ -343,6 +343,9 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 		go func(cd ClickRequest) {
 			defer wg.Done()
 			defer func() { <-sem }()
+
+			// 请求开始
+			log.Printf("开始发送: %d", i)
 			sendTime := time.Now()
 			url := cd.Tracking
 			// 设置header
@@ -373,7 +376,7 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 
 			atomic.AddInt64(&sent, 1)
 			expMetrics.Add("sent", 1)
-
+			log.Printf("结束发送: %d", i)
 		}(batch[i])
 	}
 
