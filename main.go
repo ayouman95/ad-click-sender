@@ -459,10 +459,10 @@ func logWriter() {
 			bufPool.Put(sb)
 
 		case <-ticker.C:
+			filename := filepath.Join(logDir, "click.log."+time.Now().Format("2006010215"))
+			updateSymlink(filename)
 			// 每分钟清理旧日志
 			if time.Now().Second() == 0 {
-				//filename := filepath.Join(logDir, "click.log."+time.Now().Format("2006010215"))
-				//updateSymlink(filename)
 				go cleanupOldLogs()
 			}
 
