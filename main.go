@@ -117,11 +117,6 @@ var (
 const (
 	MaxQPS           = 20000
 	BatchSize        = MaxQPS
-	MaxConns         = 100
-	MaxIdleConns     = 100
-	KeepAlive        = 90 * time.Second
-	TLSHandshake     = 10 * time.Second
-	ExpectContinue   = 1 * time.Second
 	ChannelId        = "999"
 	DdjClickIdPrefix = "pdd"
 )
