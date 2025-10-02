@@ -539,8 +539,8 @@ func main() {
 		w.Write([]byte("OK"))
 	})
 
-	log.Println("服务启动，监听 :8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	log.Println("服务启动，监听 :8103")
+	if err := http.ListenAndServe(":8103", nil); err != nil {
 		log.Fatal("启动失败:", err)
 	}
 }
