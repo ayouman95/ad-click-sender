@@ -98,19 +98,17 @@ var (
 	httpClient = &http.Client{
 		Transport: &http.Transport{
 			// 控制最大连接数
-			MaxConnsPerHost:       100,              // 每个 host 最大连接数
-			MaxIdleConns:          100,              // 最大空闲连接
-			MaxIdleConnsPerHost:   32,               // 每个 host 最大空闲连接
-			IdleConnTimeout:       60 * time.Second, // 空闲连接超时
-			DisableKeepAlives:     false,            // 启用 Keep-Alive
-			DisableCompression:    true,             // 禁用压缩（可选）
-			TLSHandshakeTimeout:   1 * time.Second,  // TLS 超时
-			ResponseHeaderTimeout: 1 * time.Second,  // 响应头超时
+			MaxConnsPerHost:     100,              // 每个 host 最大连接数
+			MaxIdleConns:        100,              // 最大空闲连接
+			MaxIdleConnsPerHost: 32,               // 每个 host 最大空闲连接
+			IdleConnTimeout:     60 * time.Second, // 空闲连接超时
+			DisableKeepAlives:   false,            // 启用 Keep-Alive
+			DisableCompression:  true,             // 禁用压缩（可选）
 		},
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
-		Timeout: 100 * time.Microsecond, // 整个请求超时
+		Timeout: 10 * time.Second, // 整个请求超时
 	}
 )
 
@@ -314,7 +312,7 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 
 	log.Printf("开始发送批次: %d 个请求", total)
 
-	sem := make(chan struct{}, runtime.GOMAXPROCS(0)*32) // 并发控制
+	sem := make(chan struct{}, runtime.GOMAXPROCS(0)*100) // 并发控制
 	var sent, failed int64
 
 	interval := time.Minute / time.Duration(BatchSize)
