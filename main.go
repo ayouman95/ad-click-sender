@@ -479,7 +479,7 @@ func updateSymlink(target string) {
 	}
 
 	// 创建新软链接
-	if err := os.Symlink(target, currentLink); err != nil {
+	if err := os.Symlink(filepath.Join(logDir, target), currentLink); err != nil {
 		log.Printf("创建软链接失败: %v", err)
 	} else {
 		//log.Printf("软链接更新: %s -> %s", currentLink, target)
