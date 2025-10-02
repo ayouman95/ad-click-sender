@@ -317,7 +317,7 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 	sem := make(chan struct{}, runtime.GOMAXPROCS(0)*32) // 并发控制
 	var sent, failed int64
 
-	interval := time.Second / time.Duration(BatchSize)
+	interval := time.Minute / time.Duration(BatchSize)
 	if interval < 50*time.Microsecond {
 		interval = 50 * time.Microsecond
 	}
