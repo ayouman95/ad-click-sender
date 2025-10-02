@@ -87,18 +87,38 @@ var (
 	logDir         = "./logs"
 	expMetrics     = expvar.NewMap("click_sender")
 	parsers        sync.Pool
-	client         = &http.Client{Timeout: 100 * time.Microsecond}
 	logWriterQueue = make(chan *LogEntry, 100000) // 异步日志队列
 	shutdown       = make(chan struct{})
 	currentLink    = "click.log" // 软链接名
 	node           *snowflake.Node
 )
 
+var (
+	// 全局复用的 HTTP Client
+	httpClient = &http.Client{
+		Transport: &http.Transport{
+			// 控制最大连接数
+			MaxConnsPerHost:       100,              // 每个 host 最大连接数
+			MaxIdleConns:          100,              // 最大空闲连接
+			MaxIdleConnsPerHost:   32,               // 每个 host 最大空闲连接
+			IdleConnTimeout:       90 * time.Second, // 空闲连接超时
+			DisableKeepAlives:     false,            // 启用 Keep-Alive
+			DisableCompression:    true,             // 禁用压缩（可选）
+			TLSHandshakeTimeout:   10 * time.Second, // TLS 超时
+			ResponseHeaderTimeout: 10 * time.Second, // 响应头超时
+		},
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+		Timeout: 30 * time.Second, // 整个请求超时
+	}
+)
+
 const (
 	MaxQPS           = 20000
 	BatchSize        = MaxQPS
-	MaxConns         = 50000
-	MaxIdleConns     = 10000
+	MaxConns         = 100
+	MaxIdleConns     = 100
 	KeepAlive        = 90 * time.Second
 	TLSHandshake     = 10 * time.Second
 	ExpectContinue   = 1 * time.Second
@@ -112,25 +132,6 @@ func init() {
 	}
 
 	parsers.New = func() interface{} { return new(fastjson.Parser) }
-
-	// 高性能 HTTP 客户端
-	transport := &http.Transport{
-		MaxIdleConns:          MaxIdleConns,
-		MaxIdleConnsPerHost:   1000,
-		MaxConnsPerHost:       MaxConns,
-		IdleConnTimeout:       KeepAlive,
-		TLSHandshakeTimeout:   TLSHandshake,
-		ExpectContinueTimeout: ExpectContinue,
-		ForceAttemptHTTP2:     true,
-	}
-
-	client = &http.Client{
-		Transport: transport,
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
-		Timeout: 15 * time.Second,
-	}
 
 	// 启动日志写入协程
 	go logWriter()
@@ -318,7 +319,7 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 
 	log.Printf("开始发送批次: %d 个请求", total)
 
-	sem := make(chan struct{}, runtime.GOMAXPROCS(0)*100) // 并发控制
+	sem := make(chan struct{}, runtime.GOMAXPROCS(0)*32) // 并发控制
 	var sent, failed int64
 
 	interval := time.Second / time.Duration(BatchSize)
@@ -356,7 +357,7 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 			reqHeaders.Set("Accept-Language", "en-US;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6")
 
 			req, _ := http.NewRequest("GET", url, nil)
-			resp, err := client.Do(req)
+			resp, err := httpClient.Do(req)
 			status := 0
 			if err != nil {
 				status = -1
