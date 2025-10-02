@@ -471,7 +471,7 @@ func logWriter() {
 
 func updateSymlink(target string) {
 	// 先删除旧的软链接
-	if err := os.Remove(currentLink); err != nil && !os.IsNotExist(err) {
+	if err := os.Remove(filepath.Join(logDir, currentLink)); err != nil && !os.IsNotExist(err) {
 		log.Printf("删除软链接失败: %v", err)
 	}
 
