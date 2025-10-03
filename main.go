@@ -466,9 +466,7 @@ func logWriter() {
 			statisticTimeStr := time.Unix(0, entry.CompleteTime).Format("2006-01-02 15:04:05")
 			// 拼接日志行
 			sb.WriteString(fmt.Sprintf(
-				`{"offerId":%s, "channelId": %s, "siteId":%s,"touchType":"%s","tracking":"%s",
-				"os":"%s", "advertiser":"%s","om":"%s","am":"%s","appId":"%s","pid":"%s","geo":"%s",
-				"clickId":"%s","statusCode":%d,"sendTime":"%s","completeTime":"%s", "time": %s}`,
+				`{"offerId":"%s","channelId":"%s","siteId":"%s","touchType":"%s","tracking":"%s","os":"%s","advertiser":"%s","om":"%s","am":"%s","appId":"%s","pid":"%s","geo":"%s","clickId":"%s","statusCode":%d,"sendTime":"%s","completeTime":"%s","time": "%s"}`,
 				entry.OfferID, ChannelId, entry.SiteID, entry.TouchType, entry.Tracking,
 				entry.OS, entry.Advertiser, entry.Om, entry.Am, entry.AppId, entry.Pid, entry.Geo,
 				entry.ClickID,
