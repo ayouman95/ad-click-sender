@@ -353,6 +353,7 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 			req, _ := http.NewRequest("GET", url, nil)
 			resp, err := httpClient.Do(req)
 			status := 0
+			// 读取resp.body
 			if err != nil {
 				status = -1
 				atomic.AddInt64(&failed, 1)
@@ -363,7 +364,12 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 			}
 
 			if status == 200 {
-				log.Println(resp.Body)
+				body, err := io.ReadAll(resp.Body)
+				if err != nil {
+					log.Println(err)
+				} else {
+					log.Println(body)
+				}
 			}
 			completeTime := time.Now()
 			// 发送到日志队列
