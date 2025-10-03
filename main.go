@@ -38,25 +38,37 @@ type UDB struct {
 }
 
 type RawClickData struct {
-	OfferID   string `json:"offerId"`
-	SiteID    string `json:"siteId"`
-	TouchType string `json:"touchType"`
-	Tracking  string `json:"tracking"`
-	Cname     string `json:"cname"`
-	OS        string `json:"os"`
-	UDBs      []UDB  `json:"udbs"`
+	OfferID    string `json:"offerId"`
+	SiteID     string `json:"siteId"`
+	TouchType  string `json:"touchType"`
+	Tracking   string `json:"tracking"`
+	Cname      string `json:"cname"`
+	OS         string `json:"os"`
+	Advertiser string `json:"advertiser"`
+	Om         string `json:"om"`
+	Am         string `json:"am"`
+	AppId      string `json:"appId"`
+	Pid        string `json:"pid"`
+	Geo        string `json:"geo"`
+	UDBs       []UDB  `json:"udbs"`
 }
 
 // 展开后的待发送请求
 type ClickRequest struct {
-	OfferID   string
-	SiteID    string
-	TouchType string
-	Tracking  string
-	Cname     string
-	OS        string
-	ClickID   string
-	RecvTime  string
+	OfferID    string
+	SiteID     string
+	TouchType  string
+	Tracking   string
+	Cname      string
+	OS         string
+	Advertiser string
+	Om         string
+	Am         string
+	AppId      string
+	Pid        string
+	Geo        string
+	ClickID    string
+	RecvTime   string
 
 	// 从 udb 提取的字段（用于替换）
 	UA     string
@@ -82,7 +94,6 @@ var (
 	// 环形缓冲区：每分钟一个 slot，共 60个
 	bufferRing     [60][]ClickRequest
 	bufferRingMu   sync.Mutex // 仅用于分钟切换
-	currentSlot    int32      // 原子操作
 	logDir         = "./logs"
 	expMetrics     = expvar.NewMap("click_sender")
 	parsers        sync.Pool
@@ -114,7 +125,8 @@ var (
 const (
 	MaxQPS           = 20000
 	BatchSize        = MaxQPS
-	ChannelId        = "999"
+	ChannelId        = "sys_pid"
+	ChannelIdNum     = "999"
 	DdjClickIdPrefix = "pdd"
 )
 
@@ -181,6 +193,12 @@ func handleReceiveClick(w http.ResponseWriter, r *http.Request) {
 	raw.Tracking = string(v.GetStringBytes("tracking"))
 	raw.Cname = string(v.GetStringBytes("cname"))
 	raw.OS = string(v.GetStringBytes("os"))
+	raw.Advertiser = string(v.GetStringBytes("advertiser"))
+	raw.Om = string(v.GetStringBytes("om"))
+	raw.Am = string(v.GetStringBytes("am"))
+	raw.AppId = string(v.GetStringBytes("appId"))
+	raw.Pid = string(v.GetStringBytes("pid"))
+	raw.Geo = string(v.GetStringBytes("geo"))
 
 	// 解析 udbs 数组
 	udbsV := v.GetArray("udbs")
@@ -220,14 +238,20 @@ func expandRequests(raw RawClickData) {
 		clickID := fastGenerateClickID(raw.OfferID)
 
 		req := ClickRequest{
-			OfferID:   raw.OfferID,
-			SiteID:    raw.SiteID,
-			TouchType: raw.TouchType,
-			Tracking:  raw.Tracking,
-			Cname:     raw.Cname,
-			OS:        raw.OS,
-			ClickID:   clickID,
-			RecvTime:  requestTimeStr,
+			OfferID:    raw.OfferID,
+			SiteID:     raw.SiteID,
+			TouchType:  raw.TouchType,
+			Tracking:   raw.Tracking,
+			Cname:      raw.Cname,
+			OS:         raw.OS,
+			Advertiser: raw.Advertiser,
+			Om:         raw.Om,
+			Am:         raw.Am,
+			AppId:      raw.AppId,
+			Pid:        raw.Pid,
+			Geo:        raw.Geo,
+			ClickID:    clickID,
+			RecvTime:   requestTimeStr,
 
 			// 从 udb 提取
 			UA:     udb.UA,
@@ -393,7 +417,7 @@ func replaceTracking(req *ClickRequest) string {
 	u = strings.ReplaceAll(u, "{siteid}", req.SiteID)
 	u = strings.ReplaceAll(u, "{offer_id}", req.OfferID)
 	u = strings.ReplaceAll(u, "{click_id}", req.ClickID)
-	u = strings.ReplaceAll(u, "{channel}", ChannelId)
+	u = strings.ReplaceAll(u, "{channel}", ChannelIdNum)
 
 	u = strings.ReplaceAll(u, "{ip}", req.IP)
 	u = strings.ReplaceAll(u, "{lang}", req.Lang)
@@ -439,12 +463,16 @@ func logWriter() {
 			// 格式话entry.SendTime成带毫秒的形式
 			sendTimeStr := time.Unix(0, entry.SendTime).Format("2006-01-02 15:04:05.000")
 			completeTimeStr := time.Unix(0, entry.CompleteTime).Format("2006-01-02 15:04:05.000")
+			statisticTimeStr := time.Unix(0, entry.CompleteTime).Format("2006-01-02 15:04:05")
 			// 拼接日志行
 			sb.WriteString(fmt.Sprintf(
-				`{"offerId":%s,"siteId":%s,"touchType":"%s","tracking":"%s","cname":"%s","os":"%s","clickId":"%s","statusCode":%d,"sendTime":"%s","completeTime":"%s"}`,
-				entry.OfferID, entry.SiteID, entry.TouchType, entry.Tracking,
-				entry.Cname, entry.OS, entry.ClickID,
-				entry.StatusCode, sendTimeStr, completeTimeStr))
+				`{"offerId":%s, "channelId": %s, "siteId":%s,"touchType":"%s","tracking":"%s",
+				"os":"%s", "advertiser":"%s","om":"%s","am":"%s","appId":"%s","pid":"%s","geo":"%s",
+				"clickId":"%s","statusCode":%d,"sendTime":"%s","completeTime":"%s", "time": %s}`,
+				entry.OfferID, ChannelId, entry.SiteID, entry.TouchType, entry.Tracking,
+				entry.OS, entry.Advertiser, entry.Om, entry.Am, entry.AppId, entry.Pid, entry.Geo,
+				entry.ClickID,
+				entry.StatusCode, sendTimeStr, completeTimeStr, statisticTimeStr))
 			sb.WriteString("\n")
 
 			// 写入文件
