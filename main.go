@@ -319,7 +319,7 @@ func scheduler() {
 				continue
 			}
 
-			go sendBatch(batch, now)
+			go sendBatch(batch)
 		case <-shutdown:
 			return
 		}
@@ -330,7 +330,7 @@ func scheduler() {
 // 发送批次（每秒 2万 均匀发送）
 // -------------------------------
 
-func sendBatch(batch []ClickRequest, minute time.Time) {
+func sendBatch(batch []ClickRequest) {
 	start := time.Now()
 	total := len(batch)
 	if total == 0 {
