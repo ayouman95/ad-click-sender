@@ -11,7 +11,6 @@ import (
 	"regexp"
 	"runtime"
 	"sort"
-	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -39,8 +38,8 @@ type UDB struct {
 }
 
 type RawClickData struct {
-	OfferID   int64  `json:"offerId"`
-	SiteID    int64  `json:"siteId"`
+	OfferID   string `json:"offerId"`
+	SiteID    string `json:"siteId"`
 	TouchType string `json:"touchType"`
 	Tracking  string `json:"tracking"`
 	Cname     string `json:"cname"`
@@ -50,8 +49,8 @@ type RawClickData struct {
 
 // 展开后的待发送请求
 type ClickRequest struct {
-	OfferID   int64
-	SiteID    int64
+	OfferID   string
+	SiteID    string
 	TouchType string
 	Tracking  string
 	Cname     string
@@ -176,8 +175,8 @@ func handleReceiveClick(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var raw RawClickData
-	raw.OfferID = v.GetInt64("offerId")
-	raw.SiteID = v.GetInt64("siteId")
+	raw.OfferID = string(v.GetStringBytes("offerId"))
+	raw.SiteID = string(v.GetStringBytes("siteId"))
 	raw.TouchType = string(v.GetStringBytes("touchType"))
 	raw.Tracking = string(v.GetStringBytes("tracking"))
 	raw.Cname = string(v.GetStringBytes("cname"))
@@ -200,9 +199,6 @@ func handleReceiveClick(w http.ResponseWriter, r *http.Request) {
 		}
 		raw.UDBs = append(raw.UDBs, udb)
 	}
-
-	log.Printf("Received click offerId: %d", raw.OfferID)
-	log.Printf("Received click siteId: %d", raw.SiteID)
 
 	if raw.Tracking == "" || len(raw.UDBs) == 0 {
 		http.Error(w, "缺少tracking或udbs为空", http.StatusBadRequest)
@@ -266,8 +262,8 @@ func expandRequests(raw RawClickData) {
 // -------------------------------
 // 快速生成 click_id（避免 uuid/md5）
 // -------------------------------
-func fastGenerateClickID(offerID int64) string {
-	return fmt.Sprintf("%s_%s%s", strconv.FormatInt(offerID, 10), DdjClickIdPrefix, node.Generate().String())
+func fastGenerateClickID(offerID string) string {
+	return fmt.Sprintf("%s_%s%s", offerID, DdjClickIdPrefix, node.Generate().String())
 }
 
 // -------------------------------
@@ -394,8 +390,8 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 
 func replaceTracking(req *ClickRequest) string {
 	u := req.Tracking
-	u = strings.ReplaceAll(u, "{siteid}", strconv.FormatInt(req.SiteID, 10))
-	u = strings.ReplaceAll(u, "{offer_id}", strconv.FormatInt(req.OfferID, 10))
+	u = strings.ReplaceAll(u, "{siteid}", req.SiteID)
+	u = strings.ReplaceAll(u, "{offer_id}", req.OfferID)
 	u = strings.ReplaceAll(u, "{click_id}", req.ClickID)
 	u = strings.ReplaceAll(u, "{channel}", ChannelId)
 
@@ -445,7 +441,7 @@ func logWriter() {
 			completeTimeStr := time.Unix(0, entry.CompleteTime).Format("2006-01-02 15:04:05.000")
 			// 拼接日志行
 			sb.WriteString(fmt.Sprintf(
-				`{"offerId":%d,"siteId":%d,"touchType":"%s","tracking":"%s","cname":"%s","os":"%s","clickId":"%s","statusCode":%d,"sendTime":"%s","completeTime":"%s"}`,
+				`{"offerId":%s,"siteId":%s,"touchType":"%s","tracking":"%s","cname":"%s","os":"%s","clickId":"%s","statusCode":%d,"sendTime":"%s","completeTime":"%s"}`,
 				entry.OfferID, entry.SiteID, entry.TouchType, entry.Tracking,
 				entry.Cname, entry.OS, entry.ClickID,
 				entry.StatusCode, sendTimeStr, completeTimeStr))
