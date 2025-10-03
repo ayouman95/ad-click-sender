@@ -239,6 +239,10 @@ func expandRequests(raw RawClickData) {
 			Bundle: udb.Bundle,
 		}
 
+		// 加上redirect=false
+		if !strings.Contains(req.Tracking, "redirect=false") {
+			req.Tracking = req.Tracking + "&redirect=false"
+		}
 		trackingReplaced := replaceTracking(&req)
 		req.Tracking = trackingReplaced
 
@@ -353,7 +357,6 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 			req, _ := http.NewRequest("GET", url, nil)
 			resp, err := httpClient.Do(req)
 			status := 0
-			// 读取resp.body
 			if err != nil {
 				status = -1
 				atomic.AddInt64(&failed, 1)
@@ -363,14 +366,6 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 				defer resp.Body.Close()
 			}
 
-			if status == 200 {
-				body, err := io.ReadAll(resp.Body)
-				if err != nil {
-					log.Println(err)
-				} else {
-					log.Println(string(body))
-				}
-			}
 			completeTime := time.Now()
 			// 发送到日志队列
 			logWriterQueue <- &LogEntry{
