@@ -201,6 +201,9 @@ func handleReceiveClick(w http.ResponseWriter, r *http.Request) {
 		raw.UDBs = append(raw.UDBs, udb)
 	}
 
+	log.Printf("Received click offerId: %d", raw.OfferID)
+	log.Printf("Received click siteId: %d", raw.SiteID)
+
 	if raw.Tracking == "" || len(raw.UDBs) == 0 {
 		http.Error(w, "缺少tracking或udbs为空", http.StatusBadRequest)
 		return
