@@ -206,6 +206,13 @@ func handleReceiveClick(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	go expandRequests(raw)
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(fmt.Sprintf(`{"status":"ok","clicks":%d}`, len(raw.UDBs))))
+}
+
+func expandRequests(raw RawClickData) {
 	// 👉 展开：每个 udb 生成一个 ClickRequest
 	var requests []ClickRequest
 	requestTime := time.Now()
@@ -239,24 +246,17 @@ func handleReceiveClick(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 写入环形缓冲区（每分钟一个 slot）
-
-	slot := int(atomic.LoadInt32(&currentSlot))
+	slot := time.Now().Minute() % 60
 	bufferRingMu.Lock()
 	bufferRing[slot] = append(bufferRing[slot], requests...)
 	bufferRingMu.Unlock()
 
 	expMetrics.Add("received", int64(len(requests)))
-
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf(`{"status":"ok","clicks":%d}`, len(requests))))
 }
 
 // -------------------------------
 // 快速生成 click_id（避免 uuid/md5）
 // -------------------------------
-
-var clickIDCounter uint64
-
 func fastGenerateClickID(offerID int64) string {
 	return fmt.Sprintf("%s_%s%s", strconv.FormatInt(offerID, 10), DdjClickIdPrefix, node.Generate().String())
 }
@@ -278,9 +278,7 @@ func scheduler() {
 			log.Println("开始处理批次")
 			thisSlotTime := time.Now()
 			lastSlotTime := thisSlotTime.Add(-1 * time.Minute)
-			thisSlot := int(thisSlotTime.Minute() % 60)
-			lastSlot := int(lastSlotTime.Minute() % 60)
-			atomic.StoreInt32(&currentSlot, int32(thisSlot))
+			lastSlot := lastSlotTime.Minute() % 60
 
 			// 获取上一分钟的数据
 			bufferRingMu.Lock()
@@ -342,8 +340,6 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 			defer wg.Done()
 			defer func() { <-sem }()
 
-			// 请求开始
-			log.Printf("开始发送: %d", i)
 			sendTime := time.Now()
 			url := cd.Tracking
 			// 设置header
@@ -374,10 +370,9 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 
 			atomic.AddInt64(&sent, 1)
 			expMetrics.Add("sent", 1)
-			log.Printf("结束发送: %d", i)
 		}(batch[i])
 	}
-
+	log.Printf("结束发送批次: %d 个请求", total)
 	// 这里等的其实是最后一批 基本上等于一分钟结束
 	wg.Wait()
 	log.Printf("批次完成: sent=%d, failed=%d", sent, failed)
