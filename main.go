@@ -368,7 +368,7 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 				if err != nil {
 					log.Println(err)
 				} else {
-					log.Println(body)
+					log.Println(string(body))
 				}
 			}
 			completeTime := time.Now()
