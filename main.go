@@ -251,6 +251,8 @@ func expandRequests(raw RawClickData) {
 	bufferRing[slot] = append(bufferRing[slot], requests...)
 	bufferRingMu.Unlock()
 
+	log.Printf("写入 slot %d: %d 个点击", slot, len(requests))
+
 	expMetrics.Add("received", int64(len(requests)))
 }
 
@@ -275,10 +277,10 @@ func scheduler() {
 	for {
 		select {
 		case <-ticker.C:
-			log.Println("开始处理批次")
 			thisSlotTime := time.Now()
 			lastSlotTime := thisSlotTime.Add(-1 * time.Minute)
 			lastSlot := lastSlotTime.Minute() % 60
+			log.Printf("开始处理slot: %d", lastSlot)
 
 			// 获取上一分钟的数据
 			bufferRingMu.Lock()
@@ -358,6 +360,10 @@ func sendBatch(batch []ClickRequest, minute time.Time) {
 			} else {
 				status = resp.StatusCode
 				defer resp.Body.Close()
+			}
+
+			if status == 200 {
+				log.Println(resp.Body)
 			}
 			completeTime := time.Now()
 			// 发送到日志队列
