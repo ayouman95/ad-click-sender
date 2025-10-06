@@ -233,6 +233,7 @@ def main():
             "clickCount": counts["clickCount"],
             "impressionCount": counts["impressionCount"],
         }
+        log(f"写入 ES: {record}")
         output_records.append(record)
 
     total = len(output_records)
