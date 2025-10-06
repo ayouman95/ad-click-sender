@@ -210,7 +210,7 @@ def main():
         log(f"处理文件: {file_path}")
         process_log_file(file_path, aggregator)
 
-    log(f"{aggregator.items()}")
+    log(f"所有数据: {aggregator}")
     output_records = []
     for key, counts in sorted(aggregator.items()):
         time_val, offer_id_int, channel_id, site_id, os_val, advertiser, om, am, app_id, pid, geo = key
