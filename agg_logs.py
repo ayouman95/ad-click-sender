@@ -58,12 +58,12 @@ def parse_datetime_from_filename(filename: str):
 
 def find_log_files(log_dir, prefix):
     now = datetime.now()
-    one_hour_ago = now - timedelta(hours=1)
+    last_now = now - timedelta(minutes=1)
     pattern = os.path.join(log_dir, f"{prefix}*")
     matched_files = []
     for file in glob.glob(pattern):
         dt = parse_datetime_from_filename(file)
-        if dt and one_hour_ago <= dt <= now:
+        if dt and last_now <= dt < now:
             matched_files.append(file)
     return sorted(matched_files)
 
@@ -207,6 +207,7 @@ def main():
 
     aggregator = {}
     for file_path in log_files:
+        log(f"处理文件: {file_path}")
         process_log_file(file_path, aggregator)
 
     output_records = []
