@@ -22,7 +22,7 @@ DEBUG_LOG = "agg_debug.log"
 ES_HOST = os.getenv("ES_HOST")
 ES_USER = os.getenv("ES_NAME")
 ES_PASS = os.getenv("ES_PASS")
-ES_INDEX = "click_records_data_test"  # 测试索引
+ES_INDEX = "click_records_data"  # 测试索引
 
 if not ES_HOST:
     raise EnvironmentError("请设置环境变量：ES_HOST")
