@@ -214,7 +214,7 @@ def main():
     for key, counts in sorted(aggregator.items()):
         time_val, offer_id_int, channel_id, site_id, os_val, advertiser, om, am, app_id, pid, geo = key
         # time_val(yyyy-MM-dd HH:mm:ss格式) 转成时间戳
-        dt = datetime.strptime(time_val, "%Y-%m-%d %H:%M:%S").timestamp()
+        dt = datetime.strptime(time_val, "%Y-%m-%d %H:%M:%S").timestamp() * 1000
         record = {
             "time": dt,
             "offerId": offer_id_int,
