@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-聚合日志并写入 Elasticsearch 索引 click_records_data_test
+聚合日志并写入 Elasticsearch 索引 click_records_data
 支持无认证（测试集群）和有认证（生产）两种模式
 """
 
@@ -210,7 +210,6 @@ def main():
         log(f"处理文件: {file_path}")
         process_log_file(file_path, aggregator)
 
-    log(f"所有数据: {aggregator}")
     output_records = []
     for key, counts in sorted(aggregator.items()):
         time_val, offer_id_int, channel_id, site_id, os_val, advertiser, om, am, app_id, pid, geo = key
