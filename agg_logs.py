@@ -57,13 +57,13 @@ def parse_datetime_from_filename(filename: str):
         return None
 
 def find_log_files(log_dir, prefix):
-    now = datetime.now()
+    now = datetime.now() - timedelta(minutes=1)
     last_now = now - timedelta(minutes=1)
     pattern = os.path.join(log_dir, f"{prefix}*")
     matched_files = []
     for file in glob.glob(pattern):
         dt = parse_datetime_from_filename(file)
-        if dt and last_now <= dt < now:
+        if dt and last_now < dt <= now:
             matched_files.append(file)
     return sorted(matched_files)
 
