@@ -213,8 +213,10 @@ def main():
     output_records = []
     for key, counts in sorted(aggregator.items()):
         time_val, offer_id_int, channel_id, site_id, os_val, advertiser, om, am, app_id, pid, geo = key
+        # time_val(yyyy-MM-dd HH:mm:ss格式) 转成时间戳
+        dt = datetime.strptime(time_val, "%Y-%m-%d %H:%M:%S").timestamp()
         record = {
-            "time": time_val,
+            "time": dt,
             "offerId": offer_id_int,
             "offerIdStr": str(offer_id_int),
             "channelId": channel_id,
