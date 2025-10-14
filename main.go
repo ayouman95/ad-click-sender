@@ -263,9 +263,9 @@ func expandRequests(raw RawClickData) {
 		}
 
 		// 加上redirect=false
-		if !strings.Contains(req.Tracking, "redirect=false") {
-			req.Tracking = req.Tracking + "&redirect=false"
-		}
+		//if !strings.Contains(req.Tracking, "redirect=false") {
+		//	req.Tracking = req.Tracking + "&redirect=false"
+		//}
 		trackingReplaced := replaceTracking(&req)
 		req.Tracking = trackingReplaced
 
