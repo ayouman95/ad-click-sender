@@ -233,9 +233,10 @@ func expandRequests(raw RawClickData) {
 	// 👉 展开：每个 udb 生成一个 ClickRequest
 	var requests []ClickRequest
 	requestTime := time.Now()
+	requestTimeStamp := time.Now().UnixMicro()
 	requestTimeStr := requestTime.Format("2006-01-02 15:04:05")
 	for _, udb := range raw.UDBs {
-		clickID := fastGenerateClickID(raw.OfferID)
+		clickID := fastGenerateClickID(raw.OfferID, raw.SiteID, requestTimeStamp)
 
 		req := ClickRequest{
 			OfferID:    raw.OfferID,
@@ -286,8 +287,8 @@ func expandRequests(raw RawClickData) {
 // -------------------------------
 // 快速生成 click_id（避免 uuid/md5）
 // -------------------------------
-func fastGenerateClickID(offerID string) string {
-	return fmt.Sprintf("%s_%s%s", offerID, DdjClickIdPrefix, node.Generate().String())
+func fastGenerateClickID(offerID string, siteID string, requestTimeStamp int64) string {
+	return fmt.Sprintf("%s_%s%s_%s_%d", offerID, DdjClickIdPrefix, node.Generate().String(), siteID, requestTimeStamp)
 }
 
 // -------------------------------
@@ -369,6 +370,7 @@ func sendBatch(batch []ClickRequest) {
 			defer wg.Done()
 			defer func() { <-sem }()
 
+			// TODO: 请求RTA
 			sendTime := time.Now()
 			url := cd.Tracking
 			// 设置header
