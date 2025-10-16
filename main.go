@@ -233,7 +233,7 @@ func expandRequests(raw RawClickData) {
 	// 👉 展开：每个 udb 生成一个 ClickRequest
 	var requests []ClickRequest
 	requestTime := time.Now()
-	requestTimeStamp := time.Now().UnixMicro()
+	requestTimeStamp := time.Now().UnixMilli()
 	requestTimeStr := requestTime.Format("2006-01-02 15:04:05")
 	for _, udb := range raw.UDBs {
 		clickID := fastGenerateClickID(raw.OfferID, raw.SiteID, requestTimeStamp)
