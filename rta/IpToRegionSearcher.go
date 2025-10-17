@@ -7,7 +7,7 @@ import (
 
 // 1、从 dbPath 加载整个 xdb 到内存
 const (
-	dbPath = "./ip2region.xdb"
+	dbPath = "./rta/ip2region.xdb"
 )
 
 var searcher *xdb.Searcher
