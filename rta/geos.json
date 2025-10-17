@@ -1,0 +1,968 @@
+{
+  "RECORDS": [
+    {
+      "c_code": "AF",
+      "time_zone": "Afghanistan Standard Time"
+    },
+    {
+      "c_code": "AL",
+      "time_zone": "Central European Standard Time"
+    },
+    {
+      "c_code": "DZ",
+      "time_zone": "Central European Standard Time"
+    },
+    {
+      "c_code": "AS",
+      "time_zone": "Samoa Standard Time"
+    },
+    {
+      "c_code": "AD",
+      "time_zone": "Romance Standard Time"
+    },
+    {
+      "c_code": "AO",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "AI",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "AQ",
+      "time_zone": "GMT Standard Time"
+    },
+    {
+      "c_code": "AG",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "AR",
+      "time_zone": "Argentina Standard Time"
+    },
+    {
+      "c_code": "AM",
+      "time_zone": "Caucasus Standard Time"
+    },
+    {
+      "c_code": "AW",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "CA",
+      "time_zone": "Canada Central Standard Time"
+    },
+    {
+      "c_code": "AU",
+      "time_zone": "AUS Eastern Standard Time"
+    },
+    {
+      "c_code": "AT",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "AZ",
+      "time_zone": "Azerbaijan Standard Time"
+    },
+    {
+      "c_code": "PT",
+      "time_zone": "Azores Standard Time"
+    },
+    {
+      "c_code": "BS",
+      "time_zone": "Eastern Standard Time"
+    },
+    {
+      "c_code": "BH/KW/\r\nQA/SA",
+      "time_zone": "Arab Standard Time"
+    },
+    {
+      "c_code": "BD",
+      "time_zone": "Central Asia Standard Time"
+    },
+    {
+      "c_code": "BB",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "BY",
+      "time_zone": "Further-Eastern European Time"
+    },
+    {
+      "c_code": "BE",
+      "time_zone": "Romance Standard Time"
+    },
+    {
+      "c_code": "BZ",
+      "time_zone": "Central America Standard Time"
+    },
+    {
+      "c_code": "BJ",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "BM",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "BT",
+      "time_zone": "Central Asia Standard Time"
+    },
+    {
+      "c_code": "BO",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "BA",
+      "time_zone": "Central European Standard Time"
+    },
+    {
+      "c_code": "BW",
+      "time_zone": "South Africa Standard Time"
+    },
+    {
+      "c_code": "BV",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "BR",
+      "time_zone": "E. South America Standard Time"
+    },
+    {
+      "c_code": "IO",
+      "time_zone": "Central Asia Standard Time"
+    },
+    {
+      "c_code": "BN",
+      "time_zone": "Singapore Standard Time"
+    },
+    {
+      "c_code": "BG",
+      "time_zone": "FLE Standard Time"
+    },
+    {
+      "c_code": "BF",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "BI",
+      "time_zone": "South Africa Standard Time"
+    },
+    {
+      "c_code": "KH",
+      "time_zone": "SE Asia Standard Time"
+    },
+    {
+      "c_code": "CM",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "CV",
+      "time_zone": "Cabo Verde Standard Time"
+    },
+    {
+      "c_code": "KY",
+      "time_zone": "SA Pacific Standard Time"
+    },
+    {
+      "c_code": "CF",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "TD",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "CL",
+      "time_zone": "Pacific SA Standard Time"
+    },
+    {
+      "c_code": "CN/HK/MO",
+      "time_zone": "China Standard Time"
+    },
+    {
+      "c_code": "CX",
+      "time_zone": "SE Asia Standard Time"
+    },
+    {
+      "c_code": "CC",
+      "time_zone": "SE Asia Standard Time"
+    },
+    {
+      "c_code": "CO/EC",
+      "time_zone": "SA Pacific Standard Time"
+    },
+    {
+      "c_code": "KM",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "CG",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "CD",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "CK",
+      "time_zone": "Hawaiian Standard Time"
+    },
+    {
+      "c_code": "CR",
+      "time_zone": "Central America Standard Time"
+    },
+    {
+      "c_code": "CI",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "HR",
+      "time_zone": "Central European Standard Time"
+    },
+    {
+      "c_code": "CU",
+      "time_zone": "SA Pacific Standard Time"
+    },
+    {
+      "c_code": "CY",
+      "time_zone": "GTB Standard Time"
+    },
+    {
+      "c_code": "CZ",
+      "time_zone": "Central Europe Standard Time"
+    },
+    {
+      "c_code": "DK",
+      "time_zone": "Romance Standard Time"
+    },
+    {
+      "c_code": "DG",
+      "time_zone": "Central Asia Standard Time"
+    },
+    {
+      "c_code": "DJ",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "DM",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "DO",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "EC",
+      "time_zone": "SA Pacific Standard Time"
+    },
+    {
+      "c_code": "EG",
+      "time_zone": "Egypt Standard Time"
+    },
+    {
+      "c_code": "SV",
+      "time_zone": "Central America Standard Time"
+    },
+    {
+      "c_code": "GQ",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "ER",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "EE",
+      "time_zone": "FLE Standard Time"
+    },
+    {
+      "c_code": "ET",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "FK",
+      "time_zone": "Atlantic Standard Time"
+    },
+    {
+      "c_code": "FO",
+      "time_zone": "GMT Standard Time"
+    },
+    {
+      "c_code": "FJ",
+      "time_zone": "Fiji Standard Time"
+    },
+    {
+      "c_code": "FI",
+      "time_zone": "FLE Standard Time"
+    },
+    {
+      "c_code": "FR",
+      "time_zone": "Romance Standard Time"
+    },
+    {
+      "c_code": "GF",
+      "time_zone": "SA Eastern Standard Time"
+    },
+    {
+      "c_code": "PF",
+      "time_zone": "West Pacific Standard Time"
+    },
+    {
+      "c_code": "TF",
+      "time_zone": "Arabian Standard Time"
+    },
+    {
+      "c_code": "GA",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "GM",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "GE",
+      "time_zone": "Caucasus Standard Time"
+    },
+    {
+      "c_code": "DE",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "GH",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "GI",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "GR",
+      "time_zone": "GTB Standard Time"
+    },
+    {
+      "c_code": "GL",
+      "time_zone": "Greenland Standard Time"
+    },
+    {
+      "c_code": "GD",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "GP",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "GU",
+      "time_zone": "West Pacific Standard Time"
+    },
+    {
+      "c_code": "GT",
+      "time_zone": "Central America Standard Time"
+    },
+    {
+      "c_code": "GG",
+      "time_zone": "GMT Standard Time"
+    },
+    {
+      "c_code": "GN",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "GW",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "GY",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "HT",
+      "time_zone": "Eastern Standard Time"
+    },
+    {
+      "c_code": "HM",
+      "time_zone": "Arabian Standard Time"
+    },
+    {
+      "c_code": "HN",
+      "time_zone": "Central America Standard Time"
+    },
+    {
+      "c_code": "UM",
+      "time_zone": "Samoa Standard Time"
+    },
+    {
+      "c_code": "HU",
+      "time_zone": "Central Europe Standard Time"
+    },
+    {
+      "c_code": "IS",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "IN",
+      "time_zone": "India Standard Time"
+    },
+    {
+      "c_code": "ID",
+      "time_zone": "SE Asia Standard Time"
+    },
+    {
+      "c_code": "IR",
+      "time_zone": "Iran Standard Time"
+    },
+    {
+      "c_code": "IQ",
+      "time_zone": "Arabic Standard Time"
+    },
+    {
+      "c_code": "IE",
+      "time_zone": "GMT Standard Time"
+    },
+    {
+      "c_code": "IM",
+      "time_zone": "GMT Standard Time"
+    },
+    {
+      "c_code": "IL",
+      "time_zone": "Israel Standard Time"
+    },
+    {
+      "c_code": "IT",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "JM",
+      "time_zone": "SA Pacific Standard Time"
+    },
+    {
+      "c_code": "JP",
+      "time_zone": "Tokyo Standard Time"
+    },
+    {
+      "c_code": "JE",
+      "time_zone": "GMT Standard Time"
+    },
+    {
+      "c_code": "JO",
+      "time_zone": "Jordan Standard Time"
+    },
+    {
+      "c_code": "KZ",
+      "time_zone": "Central Asia Standard Time"
+    },
+    {
+      "c_code": "KE",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "KI",
+      "time_zone": "Tonga Standard Time"
+    },
+    {
+      "c_code": "KR",
+      "time_zone": "Korea Standard Time"
+    },
+    {
+      "c_code": "KG",
+      "time_zone": "Central Asia Standard Time"
+    },
+    {
+      "c_code": "LA",
+      "time_zone": "SE Asia Standard Time"
+    },
+    {
+      "c_code": "LV",
+      "time_zone": "FLE Standard Time"
+    },
+    {
+      "c_code": "LB",
+      "time_zone": "Middle East Standard Time"
+    },
+    {
+      "c_code": "LS",
+      "time_zone": "South Africa Standard Time"
+    },
+    {
+      "c_code": "LR",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "LY",
+      "time_zone": "Libya Standard Time"
+    },
+    {
+      "c_code": "LI",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "LT",
+      "time_zone": "FLE Standard Time"
+    },
+    {
+      "c_code": "LU",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "MK",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "MG",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "MW",
+      "time_zone": "South Africa Standard Time"
+    },
+    {
+      "c_code": "MY",
+      "time_zone": "Singapore Standard Time"
+    },
+    {
+      "c_code": "MV",
+      "time_zone": "West Asia Standard Time"
+    },
+    {
+      "c_code": "ML",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "MT",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "MH",
+      "time_zone": "Fiji Standard Time"
+    },
+    {
+      "c_code": "MQ",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "MR",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "MU",
+      "time_zone": "Mauritius Standard Time"
+    },
+    {
+      "c_code": "YT",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "MX",
+      "time_zone": "Central Standard Time (Mexico)"
+    },
+    {
+      "c_code": "FM",
+      "time_zone": "Fiji Standard Time"
+    },
+    {
+      "c_code": "MI",
+      "time_zone": "Samoa Standard Time"
+    },
+    {
+      "c_code": "MD",
+      "time_zone": "FLE Standard Time"
+    },
+    {
+      "c_code": "MC",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "MS",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "MA",
+      "time_zone": "Morocco Standard Time"
+    },
+    {
+      "c_code": "MZ",
+      "time_zone": "South Africa Standard Time"
+    },
+    {
+      "c_code": "MM",
+      "time_zone": "Myanmar Standard Time"
+    },
+    {
+      "c_code": "NA",
+      "time_zone": "Namibia Standard Time"
+    },
+    {
+      "c_code": "NR",
+      "time_zone": "Fiji Standard Time"
+    },
+    {
+      "c_code": "NP",
+      "time_zone": "Nepal Standard Time"
+    },
+    {
+      "c_code": "BQ",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "NL",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "NC",
+      "time_zone": "Central Pacific Standard Time"
+    },
+    {
+      "c_code": "NZ",
+      "time_zone": "New Zealand Standard Time"
+    },
+    {
+      "c_code": "NI",
+      "time_zone": "Central America Standard Time"
+    },
+    {
+      "c_code": "NE",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "NG",
+      "time_zone": "W. Central Africa Standard Time"
+    },
+    {
+      "c_code": "NU",
+      "time_zone": "Samoa Standard Time"
+    },
+    {
+      "c_code": "NF",
+      "time_zone": "Central Pacific Standard Time"
+    },
+    {
+      "c_code": "KP",
+      "time_zone": "Tokyo Standard Time"
+    },
+    {
+      "c_code": "MP",
+      "time_zone": "West Pacific Standard Time"
+    },
+    {
+      "c_code": "NO",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "OM",
+      "time_zone": "Arabian Standard Time"
+    },
+    {
+      "c_code": "PK",
+      "time_zone": "Pakistan Standard Time"
+    },
+    {
+      "c_code": "PW",
+      "time_zone": "Tokyo Standard Time"
+    },
+    {
+      "c_code": "PS",
+      "time_zone": "GTB Standard Time"
+    },
+    {
+      "c_code": "PA",
+      "time_zone": "SA Pacific Standard Time"
+    },
+    {
+      "c_code": "PG",
+      "time_zone": "West Pacific Standard Time"
+    },
+    {
+      "c_code": "PY",
+      "time_zone": "SA Pacific Standard Time"
+    },
+    {
+      "c_code": "PE",
+      "time_zone": "SA Pacific Standard Time"
+    },
+    {
+      "c_code": "PH",
+      "time_zone": "China Standard Time"
+    },
+    {
+      "c_code": "PN",
+      "time_zone": "Pacific Standard Time"
+    },
+    {
+      "c_code": "PL",
+      "time_zone": "Central European Standard Time"
+    },
+    {
+      "c_code": "PR",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "RE",
+      "time_zone": "Arabian Standard Time"
+    },
+    {
+      "c_code": "RO",
+      "time_zone": "E. Europe Standard Time"
+    },
+    {
+      "c_code": "RU",
+      "time_zone": "Russian Standard Time"
+    },
+    {
+      "c_code": "RW",
+      "time_zone": "South Africa Standard Time"
+    },
+    {
+      "c_code": "SH",
+      "time_zone": "GMT Standard Time"
+    },
+    {
+      "c_code": "WS",
+      "time_zone": "Samoa Standard Time"
+    },
+    {
+      "c_code": "SM",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "ST",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "SN",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "RS",
+      "time_zone": "Central Europe Standard Time"
+    },
+    {
+      "c_code": "SC",
+      "time_zone": "Arabian Standard Time"
+    },
+    {
+      "c_code": "SL",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "SG",
+      "time_zone": "Singapore Standard Time"
+    },
+    {
+      "c_code": "SK",
+      "time_zone": "Central Europe Standard Time"
+    },
+    {
+      "c_code": "SI",
+      "time_zone": "Central Europe Standard Time"
+    },
+    {
+      "c_code": "SB",
+      "time_zone": "Central Pacific Standard Time"
+    },
+    {
+      "c_code": "SO",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "ZA",
+      "time_zone": "South Africa Standard Time"
+    },
+    {
+      "c_code": "GS",
+      "time_zone": "Mid-Atlantic Standard Time"
+    },
+    {
+      "c_code": "ES",
+      "time_zone": "Romance Standard Time"
+    },
+    {
+      "c_code": "LK",
+      "time_zone": "Sri Lanka Standard Time"
+    },
+    {
+      "c_code": "KN",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "LC",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "PM",
+      "time_zone": "SA Eastern Standard Time"
+    },
+    {
+      "c_code": "VC",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "SD",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "SR",
+      "time_zone": "SA Eastern Standard Time"
+    },
+    {
+      "c_code": "SJ",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "SZ",
+      "time_zone": "South Africa Standard Time"
+    },
+    {
+      "c_code": "SE",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "CH",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "SY",
+      "time_zone": "South Africa Standard Time"
+    },
+    {
+      "c_code": "TW",
+      "time_zone": "Taipei Standard Time"
+    },
+    {
+      "c_code": "TZ",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "TH",
+      "time_zone": "SE Asia Standard Time"
+    },
+    {
+      "c_code": "TL",
+      "time_zone": "Tokyo Standard Time"
+    },
+    {
+      "c_code": "TG",
+      "time_zone": "Greenwich Standard Time"
+    },
+    {
+      "c_code": "TK",
+      "time_zone": "Hawaiian Standard Time"
+    },
+    {
+      "c_code": "TO",
+      "time_zone": "Tonga Standard Time"
+    },
+    {
+      "c_code": "TT",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "TN",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "TR",
+      "time_zone": "Turkey Standard Time"
+    },
+    {
+      "c_code": "TM",
+      "time_zone": "West Asia Standard Time"
+    },
+    {
+      "c_code": "TC",
+      "time_zone": "SA Pacific Standard Time"
+    },
+    {
+      "c_code": "TV",
+      "time_zone": "Fiji Standard Time"
+    },
+    {
+      "c_code": "UG",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "UA",
+      "time_zone": "FLE Standard Time"
+    },
+    {
+      "c_code": "AE",
+      "time_zone": "Arabian Standard Time"
+    },
+    {
+      "c_code": "GB",
+      "time_zone": "GMT Standard Time"
+    },
+    {
+      "c_code": "UY",
+      "time_zone": "SA Eastern Standard Time"
+    },
+    {
+      "c_code": "US",
+      "time_zone": "Mountain Standard Time"
+    },
+    {
+      "c_code": "UZ",
+      "time_zone": "West Asia Standard Time"
+    },
+    {
+      "c_code": "VA",
+      "time_zone": "W. Europe Standard Time"
+    },
+    {
+      "c_code": "VE",
+      "time_zone": "Venezuela Standard Time"
+    },
+    {
+      "c_code": "VN",
+      "time_zone": "SE Asia Standard Time"
+    },
+    {
+      "c_code": "VI",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "VG",
+      "time_zone": "SA Western Standard Time"
+    },
+    {
+      "c_code": "WF",
+      "time_zone": "Fiji Standard Time"
+    },
+    {
+      "c_code": "YE",
+      "time_zone": "E. Africa Standard Time"
+    },
+    {
+      "c_code": "ZM",
+      "time_zone": "South Africa Standard Time"
+    },
+    {
+      "c_code": "ZW",
+      "time_zone": "South Africa Standard Time"
+    },
+    {
+      "c_code": "BH",
+      "time_zone": "Arab Standard Time"
+    },
+    {
+      "c_code": "KW",
+      "time_zone": "Arab Standard Time"
+    },
+    {
+      "c_code": "QA",
+      "time_zone": "Arab Standard Time"
+    },
+    {
+      "c_code": "SA",
+      "time_zone": "Arab Standard Time"
+    },
+    {
+      "c_code": "CO",
+      "time_zone": "Arab Standard Time"
+    },
+    {
+      "c_code": "TJ",
+      "time_zone": "West Asia Standard Time"
+    }
+  ]
+}

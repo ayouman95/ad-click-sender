@@ -16,6 +16,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"ad_click_sender/rta"
 	"github.com/bwmarrin/snowflake"
 	"github.com/valyala/fastjson"
 )
@@ -34,11 +35,11 @@ type UDB struct {
 	Lang      string `json:"lang"`
 	OSVersion string `json:"osVersion"`
 	GAID      string `json:"gaid"`
-	IDFA      string `json:"idfa"`
 }
 
 type RawClickData struct {
 	OfferID    string `json:"offerId"`
+	Title      string `json:"title"`
 	SiteID     string `json:"siteId"`
 	TouchType  string `json:"touchType"`
 	Tracking   string `json:"tracking"`
@@ -56,6 +57,7 @@ type RawClickData struct {
 // 展开后的待发送请求
 type ClickRequest struct {
 	OfferID    string
+	Title      string
 	SiteID     string
 	TouchType  string
 	Tracking   string
@@ -75,8 +77,10 @@ type ClickRequest struct {
 	IP     string
 	Lang   string
 	GAID   string
-	IDFA   string
 	Bundle string
+	OSV    string
+	Brand  string
+	Model  string
 }
 
 type LogEntry struct {
@@ -120,6 +124,8 @@ var (
 		},
 		Timeout: 10 * time.Second, // 整个请求超时
 	}
+
+	rtaService *rta.RtaService
 )
 
 const (
@@ -128,6 +134,9 @@ const (
 	ChannelId        = "sys_pid"
 	ChannelIdNum     = "999"
 	DdjClickIdPrefix = "pdd"
+	TTM              = "com.zhiliaoapp.musically"
+	TTS              = "com.ss.android.ugc.trill"
+	TTL              = "com.zhiliaoapp.musically.go"
 )
 
 func init() {
@@ -154,10 +163,8 @@ func init() {
 	if err != nil {
 		panic(fmt.Sprintf("无法创建 Snowflake 节点: %v", err))
 	}
-}
 
-func init() {
-
+	rtaService = rta.NewRtaService()
 }
 
 // -------------------------------
@@ -188,6 +195,7 @@ func handleReceiveClick(w http.ResponseWriter, r *http.Request) {
 
 	var raw RawClickData
 	raw.OfferID = string(v.GetStringBytes("offerId"))
+	raw.Title = string(v.GetStringBytes("title"))
 	raw.SiteID = string(v.GetStringBytes("siteId"))
 	raw.TouchType = string(v.GetStringBytes("touchType"))
 	raw.Tracking = string(v.GetStringBytes("tracking"))
@@ -213,7 +221,6 @@ func handleReceiveClick(w http.ResponseWriter, r *http.Request) {
 			Lang:      string(u.GetStringBytes("lang")),
 			OSVersion: string(u.GetStringBytes("osVersion")),
 			GAID:      string(u.GetStringBytes("gaid")),
-			IDFA:      string(u.GetStringBytes("idfa")),
 		}
 		raw.UDBs = append(raw.UDBs, udb)
 	}
@@ -240,6 +247,7 @@ func expandRequests(raw RawClickData) {
 
 		req := ClickRequest{
 			OfferID:    raw.OfferID,
+			Title:      raw.Title,
 			SiteID:     raw.SiteID,
 			TouchType:  raw.TouchType,
 			Tracking:   raw.Tracking,
@@ -259,8 +267,10 @@ func expandRequests(raw RawClickData) {
 			IP:     udb.IP,
 			Lang:   udb.Lang,
 			GAID:   udb.GAID,
-			IDFA:   udb.IDFA,
 			Bundle: udb.Bundle,
+			OSV:    udb.OSVersion,
+			Brand:  udb.Brand,
+			Model:  udb.Model,
 		}
 
 		// 加上redirect=false
@@ -342,6 +352,7 @@ func sendBatch(batch []ClickRequest) {
 
 	sem := make(chan struct{}, runtime.GOMAXPROCS(0)*100) // 并发控制
 	var sent, failed int64
+	var rtaBefore, rtaPass int64
 
 	interval := time.Minute / time.Duration(BatchSize)
 	if interval < 50*time.Microsecond {
@@ -371,6 +382,41 @@ func sendBatch(batch []ClickRequest) {
 			defer func() { <-sem }()
 
 			// TODO: 请求RTA
+			if cd.AppId == TTM || cd.AppId == TTL || cd.AppId == TTS {
+				atomic.AddInt64(&rtaBefore, 1)
+				rtaRequestData := &rta.RTAReqData{
+					PackageName:  cd.AppId,
+					Os:           cd.OS,
+					Country:      cd.Geo,
+					Gaid:         cd.GAID,
+					Idfa:         cd.GAID,
+					ClientIp:     cd.IP,
+					UserAgent:    cd.UA,
+					MediaSource:  cd.Pid,
+					Channel:      "999",
+					BundleId:     cd.Bundle,
+					SiteId:       cd.SiteID,
+					CampaignName: cd.Cname,
+					CampaignId:   cd.Cname,
+					AdName:       cd.Title,
+					AdId:         cd.OfferID,
+					OsVersion:    cd.OSV,
+					Brand:        cd.Brand,
+					Model:        cd.Model,
+					Lang:         cd.Lang,
+				}
+				passRta := false
+				if cd.Advertiser == "viking" {
+					passRta = rtaService.CheckRtaViking(rtaRequestData)
+				} else {
+					passRta = rtaService.CheckRtaZhike(rtaRequestData)
+				}
+				if !passRta {
+					return
+				} else {
+					atomic.AddInt64(&rtaPass, 1)
+				}
+			}
 			sendTime := time.Now()
 			url := cd.Tracking
 			// 设置header
@@ -408,6 +454,7 @@ func sendBatch(batch []ClickRequest) {
 	// 这里等的其实是最后一批 基本上等于一分钟结束
 	wg.Wait()
 	log.Printf("批次完成: sent=%d, failed=%d", sent, failed)
+	log.Printf("rta情况: rtaBefore=%d, rtaPass=%d", rtaBefore, rtaPass)
 }
 
 // -------------------------------
@@ -437,7 +484,7 @@ func replaceTracking(req *ClickRequest) string {
 		u = strings.ReplaceAll(u, "{idfa}", "")
 	} else if strings.EqualFold("ios", req.OS) {
 		u = strings.ReplaceAll(u, "{gaid}", "")
-		u = strings.ReplaceAll(u, "{idfa}", req.IDFA)
+		u = strings.ReplaceAll(u, "{idfa}", req.GAID)
 	}
 	return u
 }
