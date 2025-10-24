@@ -350,7 +350,7 @@ func sendBatch(batch []ClickRequest) {
 
 	log.Printf("开始发送批次: %d 个请求", total)
 
-	sem := make(chan struct{}, runtime.GOMAXPROCS(0)*100) // 并发控制
+	sem := make(chan struct{}, runtime.GOMAXPROCS(0)*500) // 并发控制
 	var sent, failed int64
 	var rtaBefore, rtaPass int64
 
