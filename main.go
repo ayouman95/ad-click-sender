@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"runtime"
 	"sort"
 	"strings"
 	"sync"
@@ -350,7 +349,7 @@ func sendBatch(batch []ClickRequest) {
 
 	log.Printf("开始发送批次: %d 个请求", total)
 
-	sem := make(chan struct{}, runtime.GOMAXPROCS(0)*500) // 并发控制
+	//sem := make(chan struct{}, runtime.GOMAXPROCS(0)*500) // 并发控制
 	var sent, failed int64
 	var rtaBefore, rtaPass int64
 
@@ -368,18 +367,18 @@ func sendBatch(batch []ClickRequest) {
 			time.Sleep(d)
 		}
 
-		select {
-		case sem <- struct{}{}:
-		default:
-			expMetrics.Add("dropped", int64(1))
-			break
-		}
+		//select {
+		//case sem <- struct{}{}:
+		//default:
+		//	expMetrics.Add("dropped", int64(1))
+		//	break
+		//}
 
 		wg.Add(1)
 
 		go func(cd ClickRequest) {
 			defer wg.Done()
-			defer func() { <-sem }()
+			//defer func() { <-sem }()
 
 			// TODO: 请求RTA
 			if cd.AppId == TTM || cd.AppId == TTL || cd.AppId == TTS {
