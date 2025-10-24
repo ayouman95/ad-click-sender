@@ -353,10 +353,8 @@ func sendBatch(batch []ClickRequest) {
 	var sent, failed int64
 	var rtaBefore, rtaPass int64
 
-	interval := time.Minute / time.Duration(BatchSize)
-	if interval < 50*time.Microsecond {
-		interval = 50 * time.Microsecond
-	}
+	// 每个点击的时间
+	interval := time.Minute / time.Duration(total)
 
 	var wg sync.WaitGroup
 
