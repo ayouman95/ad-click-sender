@@ -659,18 +659,13 @@ func (s *RtaService) checkRtaTT(rtaReqData *RTAReqData, ak, sk, networkUrl, repo
 	if resp != nil && resp.StatusCode == http.StatusOK {
 		defer resp.Body.Close()
 		body, _ := io.ReadAll(resp.Body)
-		log.Println("Rta Response:", string(body))
 
 		var resp *TiktokRtaResp
 
 		if err := json.Unmarshal(body, &resp); err == nil {
-			log.Printf("Rta resp: %+v", resp)
 			if resp.Code == 0 && len(resp.Data.TargetList) > 0 {
-				log.Printf("Rta targeting: %+v", resp.Data.TargetList)
 				for _, target := range resp.Data.TargetList {
-					log.Printf("Rta targeting: %+v", target)
 					if target.Target {
-						log.Println("Rta targeting:", target)
 						// report
 						rtaReportData := &RTAReportData{
 							AppId:           appId,
@@ -743,13 +738,10 @@ func (s *RtaService) reportRta(rtaReportData *RTAReportData, ak string, sk strin
 		"Agw-Auth":     sign,
 	}
 
-	resp, err := s.sendRequest(reportUrl, paramMap, headerMap)
+	_, err := s.sendRequest(reportUrl, paramMap, headerMap)
 	if err != nil {
 		log.Printf("report rta error: %v", err)
 	}
-	body, _ := io.ReadAll(resp.Body)
-	log.Println("Rta Report Response:", body)
-	defer resp.Body.Close()
 }
 
 func (s *RtaService) sendRequest(url string, paramMap map[string]interface{}, headers map[string]string) (*http.Response, error) {
