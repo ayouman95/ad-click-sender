@@ -378,7 +378,7 @@ func sendBatch(batch []ClickRequest) {
 			defer wg.Done()
 			//defer func() { <-sem }()
 
-			// TODO: 请求RTA
+			// TODO: 传一个是否请求rta的标志
 			if cd.AppId == TTM || cd.AppId == TTL || cd.AppId == TTS {
 				atomic.AddInt64(&rtaBefore, 1)
 				rtaRequestData := &rta.RTAReqData{
