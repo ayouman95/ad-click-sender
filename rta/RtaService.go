@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
@@ -517,6 +518,11 @@ func (s *RtaService) CheckRtaViking(rtaReuestData *RTAReqData) bool {
 }
 
 func (s *RtaService) checkRtaTT(rtaReqData *RTAReqData, ak, sk, networkUrl, reportUrl string) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("panic: %v, stack: %s", r, debug.Stack())
+		}
+	}()
 	// 构建参数
 	paramMap := make(map[string]interface{})
 
