@@ -739,10 +739,13 @@ func (s *RtaService) reportRta(rtaReportData *RTAReportData, ak string, sk strin
 		"Agw-Auth":     sign,
 	}
 
-	_, err := s.sendRequest(reportUrl, paramMap, headerMap)
+	resp, err := s.sendRequest(reportUrl, paramMap, headerMap)
 	if err != nil {
 		log.Printf("report rta error: %v", err)
 	}
+	body, _ := io.ReadAll(resp.Body)
+	log.Println("Rta Report Response:", body)
+	defer resp.Body.Close()
 }
 
 func (s *RtaService) sendRequest(url string, paramMap map[string]interface{}, headers map[string]string) (*http.Response, error) {
