@@ -50,7 +50,7 @@ var (
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
-		Timeout: 10 * time.Second, // 整个请求超时
+		Timeout: 1 * time.Second, // 整个请求超时
 	}
 )
 
