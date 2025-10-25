@@ -408,7 +408,7 @@ func sendBatch(batch []ClickRequest) {
 				} else {
 					passRta = rtaService.CheckRtaZhike(rtaRequestData)
 				}
-				log.Printf("rta result: %d", passRta)
+				log.Printf("rta result: %v", passRta)
 				if !passRta {
 					return
 				} else {
