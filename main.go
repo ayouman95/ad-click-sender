@@ -1,8 +1,13 @@
 package main
 
 import (
+	"ad_click_sender/rta"
+	"context"
 	"expvar"
 	"fmt"
+	"github.com/bwmarrin/snowflake"
+	"github.com/redis/go-redis/v9"
+	"github.com/valyala/fastjson"
 	"io"
 	"log"
 	"net/http"
@@ -14,10 +19,6 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-
-	"ad_click_sender/rta"
-	"github.com/bwmarrin/snowflake"
-	"github.com/valyala/fastjson"
 )
 
 // -------------------------------
@@ -124,18 +125,21 @@ var (
 		Timeout: 10 * time.Second, // 整个请求超时
 	}
 
-	rtaService *rta.RtaService
+	rtaService  *rta.RtaService
+	RedisClient *redis.Client
+	ctx         = context.Background()
 )
 
 const (
-	MaxQPS           = 20000
-	BatchSize        = MaxQPS
-	ChannelId        = "sys_pid"
-	ChannelIdNum     = "999"
-	DdjClickIdPrefix = "pdd"
-	TTM              = "com.zhiliaoapp.musically"
-	TTS              = "com.ss.android.ugc.trill"
-	TTL              = "com.zhiliaoapp.musically.go"
+	ChannelId             = "sys_pid"
+	ChannelIdNum          = "999"
+	DdjClickIdPrefix      = "pdd"
+	TTM                   = "com.zhiliaoapp.musically"
+	TTS                   = "com.ss.android.ugc.trill"
+	TTL                   = "com.zhiliaoapp.musically.go"
+	RedisAddr             = "54.169.101.141:6379"
+	RedisPassword         = "123456"
+	DdjRedisCountGroupKey = "ddj:num:group"
 )
 
 func init() {
@@ -351,8 +355,8 @@ func sendBatch(batch []ClickRequest) {
 
 	//sem := make(chan struct{}, runtime.GOMAXPROCS(0)*500) // 并发控制
 	var sent, failed int64
-	var rtaBefore, rtaPass int64
-
+	var rtaBeforeMap sync.Map
+	var rtaPassMap sync.Map
 	// 每个点击的时间
 	interval := time.Minute / time.Duration(total)
 
@@ -380,7 +384,13 @@ func sendBatch(batch []ClickRequest) {
 
 			// TODO: 传一个是否请求rta的标志
 			if cd.AppId == TTM || cd.AppId == TTL || cd.AppId == TTS {
-				atomic.AddInt64(&rtaBefore, 1)
+				rtaMapKey := fmt.Sprintf("%s:%s:%s:%s:%s", cd.OfferID, cd.SiteID, cd.Geo, cd.OS, cd.AppId)
+				if val, ok := rtaBeforeMap.Load(rtaMapKey); ok {
+					rtaBeforeMap.Store(rtaMapKey, val.(int64)+1)
+				} else {
+					rtaBeforeMap.Store(rtaMapKey, int64(1))
+				}
+
 				rtaRequestData := &rta.RTAReqData{
 					PackageName:  cd.AppId,
 					Os:           cd.OS,
@@ -411,7 +421,11 @@ func sendBatch(batch []ClickRequest) {
 				if !passRta {
 					return
 				} else {
-					atomic.AddInt64(&rtaPass, 1)
+					if val, ok := rtaPassMap.Load(rtaMapKey); ok {
+						rtaPassMap.Store(rtaMapKey, val.(int64)+1)
+					} else {
+						rtaPassMap.Store(rtaMapKey, int64(1))
+					}
 				}
 			}
 			sendTime := time.Now()
@@ -451,7 +465,32 @@ func sendBatch(batch []ClickRequest) {
 	// 这里等的其实是最后一批 基本上等于一分钟结束
 	wg.Wait()
 	log.Printf("批次完成: sent=%d, failed=%d", sent, failed)
-	log.Printf("rta情况: rtaBefore=%d, rtaPass=%d", rtaBefore, rtaPass)
+	log.Printf("rta情况:")
+	rtaBeforeMap.Range(func(key, value interface{}) bool {
+		val, ok := rtaPassMap.Load(key)
+		if ok {
+			log.Printf("  %s, before: %d, after: %d", key.(string), value.(int64), val.(int64))
+		} else {
+			log.Printf("  %s, before: %d, after: %d", key.(string), value.(int64), 0)
+		}
+		// 更新redis
+		updateDemandToRedis(key.(string), value.(int64)-val.(int64))
+		return true
+	})
+}
+
+func updateDemandToRedis(key string, decrCount int64) {
+	now := time.Now()
+	dateHour := now.Format("2006010215")
+	nowMinute := now.Minute()
+	minute := nowMinute / 10
+
+	RedisCountGroupKeyNow := fmt.Sprintf("%s:%s%d", DdjRedisCountGroupKey, dateHour, minute)
+
+	cmd := RedisClient.HIncrBy(ctx, RedisCountGroupKeyNow, key, -decrCount)
+	if cmd.Err() != nil {
+		log.Printf("更新redis失败: %s, %s", RedisCountGroupKeyNow, cmd.Err())
+	}
 }
 
 // -------------------------------
@@ -582,6 +621,16 @@ func cleanupOldLogs() {
 	for i := 0; i < len(logs)-60; i++ {
 		os.Remove(logs[i].name)
 	}
+}
+
+func InitRedisClient() {
+	// Redis
+	RedisClient = redis.NewClient(&redis.Options{
+		Addr:     RedisAddr,
+		Password: RedisPassword,
+		DB:       0,
+	})
+
 }
 
 // -------------------------------
