@@ -27,13 +27,31 @@ const (
 	RTA_ZHIKE_SK  = "7a9ffe698e61d04f7fc80dfc8ded52a8"
 	RTA_VIKING_SK = "2635e0b04e7483478f43b259b62689d9"
 
-	RTA_ZHIKE_NETWORK_URL    = "https://growth-rta.byteintl.com/api/v1/rta/network"
-	RTA_ZHIKE_NETWORK_URL_US = "https://growth-rta.tiktokv-us.com/api/v1/rta/network"
-	RTA_ZHIKE_REPORT_URL     = "https://growth-rta.byteintl.com/api/v1/rta/report"
-	RTA_ZHIKE_REPORT_URL_US  = "https://growth-rta.tiktokv-us.com/api/v1/rta/report"
-	RTA_VIKING_NETWORK_URL   = "http://t.vikingmedia.mobi/api/rest/pub/tiktokRTA?pub_id=934&key=aiosGNUVWYZ01237"
-	RTA_VIKING_REPORT_URL    = "http://t.vikingmedia.mobi/api/rest/pub/tiktokRTA/report?pub_id=934&key=aiosGNUVWYZ01237"
-	APPID_TT_L               = "com.zhiliaoapp.musically.go"
+	ROW_URL                = "https://growth-rta.byteintl.com/api/v1/rta/%s"
+	US_URL                 = "https://growth-rta.tiktokv-us.com/api/v1/rta/%s"
+	EU_URL                 = "https://growth-rta.tiktokv-eu.com/api/v1/rta/%s"
+	RTA_VIKING_NETWORK_URL = "http://t.vikingmedia.mobi/api/rest/pub/tiktokRTA?pub_id=934&key=aiosGNUVWYZ01237"
+	RTA_VIKING_REPORT_URL  = "http://t.vikingmedia.mobi/api/rest/pub/tiktokRTA/report?pub_id=934&key=aiosGNUVWYZ01237"
+	APPID_TT_L             = "com.zhiliaoapp.musically.go"
+)
+
+var (
+	// 全局复用的 HTTP Client
+	httpClient = &http.Client{
+		Transport: &http.Transport{
+			// 控制最大连接数
+			MaxConnsPerHost:     100,              // 每个 host 最大连接数
+			MaxIdleConns:        100,              // 最大空闲连接
+			MaxIdleConnsPerHost: 32,               // 每个 host 最大空闲连接
+			IdleConnTimeout:     60 * time.Second, // 空闲连接超时
+			DisableKeepAlives:   false,            // 启用 Keep-Alive
+			DisableCompression:  true,             // 禁用压缩（可选）
+		},
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+		Timeout: 10 * time.Second, // 整个请求超时
+	}
 )
 
 type GeosTimeZone struct {
@@ -288,6 +306,7 @@ type RtaService struct {
 	zhikeRtaIdMapForLite map[string]string
 	zhikeAppIdMap        map[string]string
 	zhikeAppIdMapForLite map[string]string
+	zhikeUrlMap          map[string]string
 	geoStatesMap         map[string][]string
 	stateCityMap         map[string][]string
 	geosTimeZoneMap      map[string][]string
@@ -302,20 +321,30 @@ func NewRtaService() *RtaService {
 	service := &RtaService{
 		zhikeRtaIdMap: map[string]string{
 			"ID": "1", "TH": "2", "BR": "3", "MX": "4", "VN": "5",
-			"CA": "6", "MY": "7", "CL": "8", "US": "9", "GB": "11",
-			"DE": "12", "FR": "15", "PH": "59", "TR": "57",
+			"CA": "6", "MY": "7", "CL": "8", "US": "9", "AU": "10",
+			"GB": "11", "DE": "12", "FR": "15", "ES": "16", "JP": "50",
+			"KR": "51", "NL": "52", "RO": "54", "KW": "55", "ZA": "56",
+			"TR": "57", "QA": "57", "PH": "59", "SA": "60", "AE": "61",
 		},
 		zhikeRtaIdMapForLite: map[string]string{
 			"BR": "103", "VN": "105", "PH": "111", "ID": "114",
 		},
 		zhikeAppIdMap: map[string]string{
-			"ID": "1180", "TH": "1180", "VN": "1180", "PH": "1180",
-			"BR": "1233", "MX": "1233", "CA": "1233", "MY": "1180",
-			"CL": "1233", "US": "1233", "GB": "1233", "DE": "1233",
-			"FR": "1233", "TR": "1233",
+			"ID": "1180", "TH": "1180", "BR": "1233", "MX": "1233", "VN": "1180",
+			"CA": "1233", "MY": "1180", "CL": "1233", "US": "1233", "AU": "1233",
+			"GB": "1233", "DE": "1233", "FR": "1233", "ES": "1233", "JP": "1180",
+			"KR": "1180", "NL": "1233", "RO": "1233", "KW": "1233", "ZA": "1233",
+			"TR": "1233", "QA": "1233", "PH": "1180", "SA": "1233", "AE": "1233",
 		},
 		zhikeAppIdMapForLite: map[string]string{
 			"BR": "1340", "PH": "1340", "VN": "1340", "ID": "1340",
+		},
+		zhikeUrlMap: map[string]string{
+			"ID": ROW_URL, "TH": ROW_URL, "BR": ROW_URL, "MX": ROW_URL, "VN": ROW_URL,
+			"CA": ROW_URL, "MY": ROW_URL, "CL": ROW_URL, "US": US_URL, "AU": ROW_URL,
+			"GB": EU_URL, "DE": EU_URL, "FR": EU_URL, "ES": EU_URL, "JP": ROW_URL,
+			"KR": ROW_URL, "NL": EU_URL, "RO": EU_URL, "KW": ROW_URL, "ZA": ROW_URL,
+			"TR": ROW_URL, "QA": ROW_URL, "PH": ROW_URL, "SA": ROW_URL, "AE": ROW_URL,
 		},
 		geoStatesMap:      make(map[string][]string),
 		stateCityMap:      make(map[string][]string),
@@ -480,7 +509,7 @@ func (s *RtaService) sign(ak string, sk string, requestTimestamp int64, body []b
 }
 
 func (s *RtaService) CheckRtaZhike(rtaReuestData *RTAReqData) bool {
-	return s.checkRtaTT(rtaReuestData, RTA_ZHIKE_AK, RTA_ZHIKE_SK, RTA_ZHIKE_NETWORK_URL, RTA_ZHIKE_REPORT_URL)
+	return s.checkRtaTT(rtaReuestData, RTA_ZHIKE_AK, RTA_ZHIKE_SK, fmt.Sprintf(s.zhikeUrlMap[rtaReuestData.Country], "network"), fmt.Sprintf(s.zhikeUrlMap[rtaReuestData.Country], "report"))
 }
 
 func (s *RtaService) CheckRtaViking(rtaReuestData *RTAReqData) bool {
@@ -488,12 +517,6 @@ func (s *RtaService) CheckRtaViking(rtaReuestData *RTAReqData) bool {
 }
 
 func (s *RtaService) checkRtaTT(rtaReqData *RTAReqData, ak, sk, networkUrl, reportUrl string) bool {
-	// 处理 US 特殊域名
-	if networkUrl == RTA_ZHIKE_NETWORK_URL && strings.ToUpper(rtaReqData.Country) == "US" {
-		networkUrl = RTA_ZHIKE_NETWORK_URL_US
-		reportUrl = RTA_ZHIKE_REPORT_URL_US
-	}
-
 	// 构建参数
 	paramMap := make(map[string]interface{})
 
@@ -736,7 +759,7 @@ func (s *RtaService) sendRequest(url string, paramMap map[string]interface{}, he
 	for key, value := range headers {
 		req.Header.Set(key, value)
 	}
-	return http.DefaultClient.Do(req)
+	return httpClient.Do(req)
 }
 
 func generateUUID() string {
