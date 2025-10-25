@@ -474,7 +474,7 @@ func sendBatch(batch []ClickRequest) {
 			log.Printf("  %s, before: %d, after: %d", key.(string), value.(int64), 0)
 		}
 		// 更新redis
-		updateDemandToRedis(key.(string), value.(int64)-val.(int64))
+		//updateDemandToRedis(key.(string), value.(int64)-val.(int64))
 		return true
 	})
 }
