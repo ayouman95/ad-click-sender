@@ -663,10 +663,14 @@ func (s *RtaService) checkRtaTT(rtaReqData *RTAReqData, ak, sk, networkUrl, repo
 
 		var resp *TiktokRtaResp
 
-		if err := json.Unmarshal(body, &resp); err != nil {
+		if err := json.Unmarshal(body, &resp); err == nil {
+			log.Printf("Rta resp: %+v", resp)
 			if resp.Code == 0 && len(resp.Data.TargetList) > 0 {
+				log.Printf("Rta targeting: %+v", resp.Data.TargetList)
 				for _, target := range resp.Data.TargetList {
+					log.Printf("Rta targeting: %+v", target)
 					if target.Target {
+						log.Println("Rta targeting:", target)
 						// report
 						rtaReportData := &RTAReportData{
 							AppId:           appId,
