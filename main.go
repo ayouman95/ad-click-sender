@@ -474,7 +474,7 @@ func sendBatch(batch []ClickRequest) {
 			log.Printf("  %s, before: %d, after: %d", key.(string), value.(int64), 0)
 		}
 		// 更新redis
-		updateDemandToRedis(key.(string), value.(int64)-val.(int64))
+		updateDemandToRedis(key.(string), -val.(int64))
 		return true
 	})
 }
@@ -484,13 +484,6 @@ func updateDemandToRedis(key string, decrCount int64) {
 	dateHour := now.Format("2006010215")
 	nowMinute := now.Minute()
 	minute := nowMinute / 10
-	minuteInTen := nowMinute % 10
-
-	// 剩余的就不转到下个十分钟了
-	if minuteInTen == 0 {
-		log.Printf("当前分钟是0，不更新: %d", minuteInTen)
-		return
-	}
 
 	RedisCountGroupKeyNow := fmt.Sprintf("%s:%s%d", DdjRedisCountGroupKey, dateHour, minute)
 
