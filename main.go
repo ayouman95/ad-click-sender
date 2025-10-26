@@ -488,7 +488,7 @@ func updateDemandToRedis(key string, decrCount int64) {
 
 	// 上个十分钟剩余的就不转到下个十分钟了
 	if minuteInTen == 1 {
-		log.Printf("当前分钟是0，不更新: %d", minuteInTen)
+		log.Printf("当前分钟是1，不更新: %d", minuteInTen)
 		return
 	}
 
