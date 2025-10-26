@@ -474,7 +474,7 @@ func sendBatch(batch []ClickRequest) {
 			log.Printf("  %s, before: %d, after: %d", key.(string), value.(int64), 0)
 		}
 		// 更新redis
-		//updateDemandToRedis(key.(string), value.(int64)-val.(int64))
+		updateDemandToRedis(key.(string), value.(int64)-val.(int64))
 		return true
 	})
 }
@@ -623,7 +623,7 @@ func cleanupOldLogs() {
 	}
 }
 
-func InitRedisClient() {
+func initRedisClient() {
 	// Redis
 	RedisClient = redis.NewClient(&redis.Options{
 		Addr:     RedisAddr,
@@ -650,7 +650,7 @@ func metricsHandler(w http.ResponseWriter, _ *http.Request) {
 
 func main() {
 	go scheduler()
-
+	initRedisClient()
 	http.HandleFunc("/click", handleReceiveClick)
 	http.HandleFunc("/metrics", metricsHandler)
 	http.HandleFunc("/hc", func(w http.ResponseWriter, r *http.Request) {
