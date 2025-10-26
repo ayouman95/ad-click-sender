@@ -488,6 +488,7 @@ func updateDemandToRedis(key string, decrCount int64) {
 
 	// 剩余的就不转到下个十分钟了
 	if minuteInTen == 0 {
+		log.Printf("当前分钟是0，不更新: %d", minuteInTen)
 		return
 	}
 
@@ -496,6 +497,8 @@ func updateDemandToRedis(key string, decrCount int64) {
 	cmd := RedisClient.HIncrBy(ctx, RedisCountGroupKeyNow, key, decrCount)
 	if cmd.Err() != nil {
 		log.Printf("更新redis失败: %s, %s", RedisCountGroupKeyNow, cmd.Err())
+	} else {
+		log.Printf("更新redis成功: %s, %s, %d", RedisCountGroupKeyNow, key, decrCount)
 	}
 }
 
