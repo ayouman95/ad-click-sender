@@ -487,7 +487,7 @@ func updateDemandToRedis(key string, decrCount int64) {
 
 	RedisCountGroupKeyNow := fmt.Sprintf("%s:%s%d", DdjRedisCountGroupKey, dateHour, minute)
 
-	cmd := RedisClient.HIncrBy(ctx, RedisCountGroupKeyNow, key, -decrCount)
+	cmd := RedisClient.HIncrBy(ctx, RedisCountGroupKeyNow, key, decrCount)
 	if cmd.Err() != nil {
 		log.Printf("更新redis失败: %s, %s", RedisCountGroupKeyNow, cmd.Err())
 	}
