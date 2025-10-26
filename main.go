@@ -484,6 +484,12 @@ func updateDemandToRedis(key string, decrCount int64) {
 	dateHour := now.Format("2006010215")
 	nowMinute := now.Minute()
 	minute := nowMinute / 10
+	minuteInTen := nowMinute % 10
+
+	// 剩余的就不转到下个十分钟了
+	if minuteInTen == 0 {
+		return
+	}
 
 	RedisCountGroupKeyNow := fmt.Sprintf("%s:%s%d", DdjRedisCountGroupKey, dateHour, minute)
 
