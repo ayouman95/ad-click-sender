@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime/debug"
 	"sort"
 	"strings"
 	"sync"
@@ -380,6 +381,11 @@ func sendBatch(batch []ClickRequest) {
 
 		go func(cd ClickRequest) {
 			defer wg.Done()
+			defer func() {
+				if r := recover(); r != nil {
+					log.Printf("panic: %v, %s", r, debug.Stack())
+				}
+			}()
 			//defer func() { <-sem }()
 
 			// TODO: 传一个是否请求rta的标志
