@@ -552,6 +552,9 @@ func (s *RtaService) checkRtaTT(rtaReqData *RTAReqData, ak, sk, networkUrl, repo
 	paramMap["timestamp"] = timeStamp
 
 	rtaId := s.zhikeRtaIdMap[rtaReqData.Country]
+	if rtaReqData.Country == "CL" {
+		rtaId = "2208" // TODO: 临时测CL拉活使用
+	}
 	if rtaReqData.PackageName == APPID_TT_L {
 		rtaId = s.zhikeRtaIdMapForLite[rtaReqData.Country]
 	}
