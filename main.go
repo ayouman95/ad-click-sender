@@ -346,6 +346,11 @@ func scheduler() {
 // -------------------------------
 
 func sendBatch(batch []ClickRequest) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("panic send batch: %v, %s", r, debug.Stack())
+		}
+	}()
 	start := time.Now()
 	total := len(batch)
 	if total == 0 {
@@ -383,7 +388,7 @@ func sendBatch(batch []ClickRequest) {
 			defer wg.Done()
 			defer func() {
 				if r := recover(); r != nil {
-					log.Printf("panic: %v, %s", r, debug.Stack())
+					log.Printf("panic send request: %v, %s", r, debug.Stack())
 				}
 			}()
 			//defer func() { <-sem }()
@@ -474,13 +479,14 @@ func sendBatch(batch []ClickRequest) {
 	log.Printf("rta情况:")
 	rtaBeforeMap.Range(func(key, value interface{}) bool {
 		val, ok := rtaPassMap.Load(key)
-		if ok {
-			log.Printf("  %s, before: %d, after: %d", key.(string), value.(int64), val.(int64))
-		} else {
-			log.Printf("  %s, before: %d, after: %d", key.(string), value.(int64), 0)
+		valueInt, okValueInt := value.(int64)
+		valInt, okValInt := val.(int64)
+		if ok && okValueInt && okValInt {
+			log.Printf("  %s, before: %d, after: %d", key.(string), valueInt, valInt)
+			// 更新redis
+			updateDemandToRedis(key.(string), -val.(int64))
 		}
-		// 更新redis
-		updateDemandToRedis(key.(string), -val.(int64))
+
 		return true
 	})
 }
