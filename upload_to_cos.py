@@ -92,7 +92,7 @@ def main():
     # 清理本地文件
     try:
         gz_path.unlink()
-        logger.info(f"Cleaned up: {log_path}, {gz_path}")
+        logger.info(f"Cleaned up: {gz_path}")
     except Exception as e:
         logger.warning(f"Cleanup failed: {e}")
 
