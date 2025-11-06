@@ -91,7 +91,6 @@ def main():
 
     # 清理本地文件
     try:
-        log_path.unlink()
         gz_path.unlink()
         logger.info(f"Cleaned up: {log_path}, {gz_path}")
     except Exception as e:
