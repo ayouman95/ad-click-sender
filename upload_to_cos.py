@@ -75,7 +75,7 @@ def main():
 
     # COS 目录结构：按日志时间（东八区）组织
     cos_dir = t_minus_2.strftime("%Y/%m/%d/%H/%M")
-    cos_key = f"{cos_dir}/{gz_filename}"
+    cos_key = f"click_logs/{cos_dir}/{gz_filename}"
 
     try:
         client, bucket = get_cos_client()
