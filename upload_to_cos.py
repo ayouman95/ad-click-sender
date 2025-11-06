@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 REGION_MAP = {
     "de": "eu-frankfurt",
     "sg": "ap-singapore",
-    "us": "na-siliconvalley"
+    "us": "na-ashburn"
 }
 BUCKET_NAME_TEMPLATE = "pando-adx-{region}-1374116111"
 
