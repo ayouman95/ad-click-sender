@@ -49,17 +49,18 @@ def get_cos_client():
     return client, bucket_name
 
 def main():
-    # 计算 T-2 分钟的时间
-    t_minus_2 = datetime.utcnow() - timedelta(minutes=2)
+    # 使用本地时间（假设系统时区为 Asia/Shanghai）
+    now_local = datetime.now()  # 依赖系统时区
+    t_minus_2 = now_local - timedelta(minutes=2)
     ts_str = t_minus_2.strftime("%Y%m%d%H%M")
     log_filename = f"click.log.{ts_str}"
     log_path = LOG_DIR / log_filename
 
     if not log_path.exists():
-        logger.info(f"Log file not found: {log_path}")
+        logger.info(f"[T-2={ts_str}] Log file not found: {log_path}")
         return
 
-    # 压缩并重命名
+    # 压缩并重命名：加上 hostname
     gz_filename = f"{log_filename}.{HOSTNAME}.gz"
     gz_path = LOG_DIR / gz_filename
 
@@ -67,12 +68,12 @@ def main():
         with open(log_path, 'rb') as f_in:
             with gzip.open(gz_path, 'wb') as f_out:
                 f_out.writelines(f_in)
-        logger.info(f"Compressed to: {gz_path}")
+        logger.info(f"Compressed: {gz_path}")
     except Exception as e:
         logger.error(f"Compression failed for {log_path}: {e}")
         return
 
-    # 构造 COS 路径：YYYY/MM/DD/HH/MM/filename.gz
+    # COS 目录结构：按日志时间（东八区）组织
     cos_dir = t_minus_2.strftime("%Y/%m/%d/%H/%M")
     cos_key = f"{cos_dir}/{gz_filename}"
 
@@ -88,11 +89,11 @@ def main():
         logger.error(f"Upload failed: {e}")
         return
 
-    # 清理本地文件（可选）
+    # 清理本地文件
     try:
         log_path.unlink()
         gz_path.unlink()
-        logger.info(f"Cleaned up local files: {log_path}, {gz_path}")
+        logger.info(f"Cleaned up: {log_path}, {gz_path}")
     except Exception as e:
         logger.warning(f"Cleanup failed: {e}")
 
