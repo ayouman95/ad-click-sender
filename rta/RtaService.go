@@ -328,7 +328,7 @@ func NewRtaService() *RtaService {
 			"TR": "57", "QA": "57", "PH": "59", "SA": "60", "AE": "61",
 		},
 		zhikeRtaIdMapForLite: map[string]string{
-			"BR": "103", "VN": "105", "PH": "111", "ID": "114",
+			"BR": "103", "VN": "105", "PH": "111", "ID": "114", "MY": "107",
 		},
 		zhikeAppIdMap: map[string]string{
 			"ID": "1180", "TH": "1180", "BR": "1233", "MX": "1233", "VN": "1180",
@@ -338,7 +338,7 @@ func NewRtaService() *RtaService {
 			"TR": "1233", "QA": "1233", "PH": "1180", "SA": "1233", "AE": "1233",
 		},
 		zhikeAppIdMapForLite: map[string]string{
-			"BR": "1340", "PH": "1340", "VN": "1340", "ID": "1340",
+			"BR": "1340", "PH": "1340", "VN": "1340", "ID": "1340", "MY": "1340",
 		},
 		zhikeUrlMap: map[string]string{
 			"ID": ROW_URL, "TH": ROW_URL, "BR": ROW_URL, "MX": ROW_URL, "VN": ROW_URL,
