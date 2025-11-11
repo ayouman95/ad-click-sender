@@ -123,7 +123,7 @@ def process_log_file(filepath: str, aggregator):
                 except json.JSONDecodeError:
                     continue
 
-                if data.get("statusCode") != 200 and data.get("statusCode") != 301:
+                if data.get("statusCode") != 200 and data.get("statusCode") != 301 and data.get("statusCode") != 302 and data.get("statusCode") != 307:
                     continue
 
                 touch_type = data.get("touchType", "").lower()
