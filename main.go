@@ -74,14 +74,15 @@ type ClickRequest struct {
 	RecvTime   string
 
 	// 从 udb 提取的字段（用于替换）
-	UA     string
-	IP     string
-	Lang   string
-	GAID   string
-	Bundle string
-	OSV    string
-	Brand  string
-	Model  string
+	UA        string
+	IP        string
+	Lang      string
+	GAID      string
+	Publisher string
+	Bundle    string
+	OSV       string
+	Brand     string
+	Model     string
 }
 
 type LogEntry struct {
@@ -267,14 +268,15 @@ func expandRequests(raw RawClickData) {
 			RecvTime:   requestTimeStr,
 
 			// 从 udb 提取
-			UA:     udb.UA,
-			IP:     udb.IP,
-			Lang:   udb.Lang,
-			GAID:   udb.GAID,
-			Bundle: udb.Bundle,
-			OSV:    udb.OSVersion,
-			Brand:  udb.Brand,
-			Model:  udb.Model,
+			UA:        udb.UA,
+			IP:        udb.IP,
+			Lang:      udb.Lang,
+			GAID:      udb.GAID,
+			Publisher: udb.Publisher,
+			Bundle:    udb.Bundle,
+			OSV:       udb.OSVersion,
+			Brand:     udb.Brand,
+			Model:     udb.Model,
 		}
 
 		// 加上redirect=false
@@ -572,11 +574,13 @@ func logWriter() {
 			statisticTimeStr := time.Unix(0, entry.CompleteTime).Format("2006-01-02 15:04:05")
 			// 拼接日志行
 			sb.WriteString(fmt.Sprintf(
-				`{"offerId":"%s","channelId":"%s","siteId":"%s","touchType":"%s","tracking":"%s","os":"%s","advertiser":"%s","om":"%s","am":"%s","appId":"%s","pid":"%s","geo":"%s","clickId":"%s","statusCode":%d,"sendTime":"%s","completeTime":"%s","time": "%s"}`,
+				`{"offerId":"%s","channelId":"%s","siteId":"%s","touchType":"%s","tracking":"%s","os":"%s","advertiser":"%s","om":"%s","am":"%s","appId":"%s","pid":"%s","geo":"%s","clickId":"%s","statusCode":%d,"sendTime":"%s","completeTime":"%s","time": "%s","publisher": "%s","bundle": "%s","brand": "%s"，"model": "%s"}`,
 				entry.OfferID, ChannelId, entry.SiteID, entry.TouchType, entry.Tracking,
 				entry.OS, entry.Advertiser, entry.Om, entry.Am, entry.AppId, entry.Pid, entry.Geo,
 				entry.ClickID,
-				entry.StatusCode, sendTimeStr, completeTimeStr, statisticTimeStr))
+				entry.StatusCode, sendTimeStr, completeTimeStr, statisticTimeStr,
+				entry.Publisher, entry.Bundle, entry.Brand, entry.Model,
+			))
 			sb.WriteString("\n")
 
 			// 写入文件
