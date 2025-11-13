@@ -114,17 +114,17 @@ var (
 	httpClient = &http.Client{
 		Transport: &http.Transport{
 			// 控制最大连接数
-			MaxConnsPerHost:     100,              // 每个 host 最大连接数
-			MaxIdleConns:        100,              // 最大空闲连接
-			MaxIdleConnsPerHost: 32,               // 每个 host 最大空闲连接
-			IdleConnTimeout:     60 * time.Second, // 空闲连接超时
+			MaxConnsPerHost:     500,              // 每个 host 最大连接数
+			MaxIdleConns:        200,              // 最大空闲连接
+			MaxIdleConnsPerHost: 100,              // 每个 host 最大空闲连接
+			IdleConnTimeout:     90 * time.Second, // 空闲连接超时
 			DisableKeepAlives:   false,            // 启用 Keep-Alive
 			DisableCompression:  true,             // 禁用压缩（可选）
 		},
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
-		Timeout: 10 * time.Second, // 整个请求超时
+		Timeout: 2 * time.Second, // 整个请求超时
 	}
 
 	rtaService  *rta.RtaService
@@ -244,11 +244,8 @@ func handleReceiveClick(w http.ResponseWriter, r *http.Request) {
 func expandRequests(raw RawClickData) {
 	// 👉 展开：每个 udb 生成一个 ClickRequest
 	var requests []ClickRequest
-	requestTime := time.Now()
-	requestTimeStamp := time.Now().UnixMilli()
-	requestTimeStr := requestTime.Format("2006-01-02 15:04:05")
+	requestTimeStr := time.Now().Format("2006-01-02 15:04:05")
 	for _, udb := range raw.UDBs {
-		clickID := fastGenerateClickID(raw.OfferID, raw.SiteID, requestTimeStamp)
 
 		req := ClickRequest{
 			OfferID:    raw.OfferID,
@@ -264,7 +261,6 @@ func expandRequests(raw RawClickData) {
 			AppId:      raw.AppId,
 			Pid:        raw.Pid,
 			Geo:        raw.Geo,
-			ClickID:    clickID,
 			RecvTime:   requestTimeStr,
 
 			// 从 udb 提取
@@ -283,8 +279,6 @@ func expandRequests(raw RawClickData) {
 		//if !strings.Contains(req.Tracking, "redirect=false") {
 		//	req.Tracking = req.Tracking + "&redirect=false"
 		//}
-		trackingReplaced := replaceTracking(&req)
-		req.Tracking = trackingReplaced
 
 		requests = append(requests, req)
 	}
@@ -442,6 +436,14 @@ func sendBatch(batch []ClickRequest) {
 				}
 			}
 			sendTime := time.Now()
+
+			// 生成clickid  替换宏参
+			clickID := fastGenerateClickID(cd.OfferID, cd.SiteID, sendTime.UnixMilli())
+			cd.ClickID = clickID
+
+			trackingReplaced := replaceTracking(&cd)
+			cd.Tracking = trackingReplaced
+
 			url := cd.Tracking
 			// 设置header
 			reqHeaders := make(http.Header)
@@ -571,7 +573,7 @@ func logWriter() {
 			// 格式话entry.SendTime成带毫秒的形式
 			sendTimeStr := time.Unix(0, entry.SendTime).Format("2006-01-02 15:04:05.000")
 			completeTimeStr := time.Unix(0, entry.CompleteTime).Format("2006-01-02 15:04:05.000")
-			statisticTimeStr := time.Unix(0, entry.CompleteTime).Format("2006-01-02 15:04:05")
+			statisticTimeStr := time.Unix(0, entry.SendTime).Format("2006-01-02 15:04:05")
 			// 拼接日志行
 			sb.WriteString(fmt.Sprintf(
 				`{"offerId":"%s","channelId":"%s","siteId":"%s","touchType":"%s","tracking":"%s","os":"%s","advertiser":"%s","om":"%s","am":"%s","appId":"%s","pid":"%s","geo":"%s","clickId":"%s","statusCode":%d,"sendTime":"%s","completeTime":"%s","time": "%s","publisher": "%s","bundle": "%s","brand": "%s","model": "%s"}`,
