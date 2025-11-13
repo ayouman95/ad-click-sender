@@ -90,11 +90,11 @@ def main():
         return
 
     # 清理本地文件
-    try:
-        gz_path.unlink()
-        logger.info(f"Cleaned up: {gz_path}")
-    except Exception as e:
-        logger.warning(f"Cleanup failed: {e}")
+    # try:
+    #     gz_path.unlink()
+    #     logger.info(f"Cleaned up: {gz_path}")
+    # except Exception as e:
+    #     logger.warning(f"Cleanup failed: {e}")
 
 if __name__ == "__main__":
     main()
