@@ -114,9 +114,9 @@ var (
 	httpClient = &http.Client{
 		Transport: &http.Transport{
 			// 控制最大连接数
-			MaxConnsPerHost:     500,              // 每个 host 最大连接数
-			MaxIdleConns:        200,              // 最大空闲连接
-			MaxIdleConnsPerHost: 100,              // 每个 host 最大空闲连接
+			MaxConnsPerHost:     1000,             // 每个 host 最大连接数
+			MaxIdleConns:        400,              // 最大空闲连接
+			MaxIdleConnsPerHost: 200,              // 每个 host 最大空闲连接
 			IdleConnTimeout:     90 * time.Second, // 空闲连接超时
 			DisableKeepAlives:   false,            // 启用 Keep-Alive
 			DisableCompression:  true,             // 禁用压缩（可选）
@@ -124,7 +124,7 @@ var (
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
-		Timeout: 2 * time.Second, // 整个请求超时
+		Timeout: 1 * time.Second, // 整个请求超时
 	}
 
 	rtaService  *rta.RtaService
