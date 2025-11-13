@@ -121,21 +121,17 @@ def process_log_file(filepath: str, aggregator):
                 try:
                     data = json.loads(line)
                 except json.JSONDecodeError:
-                    log(f"❌ 解析日志行失败: {line}")
                     continue
 
                 if data.get("statusCode") != 200 and data.get("statusCode") != 301 and data.get("statusCode") != 302 and data.get("statusCode") != 307:
-                    log(f"❌ 非正常状态码: {line}")
                     continue
 
                 touch_type = data.get("touchType", "").lower()
                 if touch_type not in ("click", "impression"):
-                    log(f"❌ 非点击或曝光: {line}")
                     continue
 
                 raw_time = data.get("time") or data.get("sendTime")
                 if not raw_time:
-                    log(f"❌ 无法获取时间: {line}")
                     continue
                 time_key = extract_time(raw_time)
 
