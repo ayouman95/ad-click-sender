@@ -456,7 +456,6 @@ func sendBatch(batch []ClickRequest) {
 			status := 0
 			if err != nil {
 				status = -1
-				log.Printf("发送失败: %s, %v", url, err)
 				atomic.AddInt64(&failed, 1)
 				expMetrics.Add("failed", 1)
 			} else {
