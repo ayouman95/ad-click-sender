@@ -388,6 +388,7 @@ func sendBatch(batch []ClickRequest) {
 				}
 			}()
 			//defer func() { <-sem }()
+			log.Printf("开始发送: %s", cd.OfferID)
 
 			// TODO: 传一个是否请求rta的标志
 			if cd.AppId == TTM || cd.AppId == TTL || cd.AppId == TTS {
