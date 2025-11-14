@@ -289,7 +289,7 @@ func expandRequests(raw RawClickData) {
 	bufferRing[slot] = append(bufferRing[slot], requests...)
 	bufferRingMu.Unlock()
 
-	log.Printf("写入 slot %d: %d 个点击", slot, len(requests))
+	log.Printf("写入 slot %d %s: %d 个点击", slot, raw.OfferID, len(requests))
 
 	expMetrics.Add("received", int64(len(requests)))
 }
