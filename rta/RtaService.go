@@ -672,7 +672,10 @@ func (s *RtaService) checkRtaTT(rtaReqData *RTAReqData, ak, sk, networkUrl, repo
 	}
 
 	// 这里应该发送 HTTP 请求
+	start := time.Now()
 	resp, err := s.sendRequest(networkUrl, paramMap, headers)
+	duration := time.Since(start)
+	log.Printf("rta request time: %v", duration)
 	// 模拟响应处理
 	if resp != nil && resp.StatusCode == http.StatusOK {
 		defer resp.Body.Close()
