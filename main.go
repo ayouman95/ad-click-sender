@@ -446,7 +446,11 @@ func sendBatch(batch []ClickRequest) {
 
 			url := cd.Tracking
 
-			req, _ := http.NewRequest("GET", url, nil)
+			req, err := http.NewRequest("GET", url, nil)
+
+			if err != nil {
+				log.Printf("%s请求创建错误: %s", cd.OfferID, err)
+			}
 			req.Header.Set("User-Agent", cd.UA)
 			req.Header.Set("X-Forwarded-For", cd.IP)
 			req.Header.Set("Accept-Language", "en-US;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6")
