@@ -537,9 +537,9 @@ func replaceTracking(req *ClickRequest) string {
 	u = strings.ReplaceAll(u, "{c_id}", req.Cname)
 	u = strings.ReplaceAll(u, "{c}", req.Cname)
 	u = strings.ReplaceAll(u, "{bundle}", req.Bundle)
-	u = strings.ReplaceAll(u, "{publisher}", req.Bundle)
-	u = strings.ReplaceAll(u, "{brand}", req.Bundle)
-	u = strings.ReplaceAll(u, "{model}", req.Bundle)
+	u = strings.ReplaceAll(u, "{publisher}", req.Publisher)
+	u = strings.ReplaceAll(u, "{brand}", req.Brand)
+	u = strings.ReplaceAll(u, "{model}", req.Model)
 	u = strings.ReplaceAll(u, "{is_retargeting}", "false")
 
 	if strings.EqualFold("android", req.OS) {
